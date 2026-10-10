@@ -4,13 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Attendance — Prithvi Realcon Transport</title>
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#14201b">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="Attendance">
-<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
-<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Sora:wght@400;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
@@ -71,8 +64,6 @@ button.sm{padding:7px 12px;font-size:12px;border-radius:10px}
 .worked{font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--muted);margin-top:6px}
 .status{display:none;margin-top:16px;padding:12px 14px;border-radius:12px;font-size:13.5px;background:var(--soft);white-space:pre-line;word-break:break-word}
 .status.success{background:var(--ok-soft);color:var(--ok)}.status.error{background:var(--bad-soft);color:var(--bad)}.status.info{background:var(--accent-soft);color:var(--accent)}
-#loc-warn{display:block}
-#loc-warn button{margin-left:8px;padding:6px 12px;font-size:12px;border-radius:10px}
 .nav{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
 a{color:var(--muted);font-size:13px;text-decoration:none;font-weight:600;cursor:pointer}a:hover{color:var(--accent)}
 .tw{overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:13px}
@@ -95,6 +86,8 @@ td .muted{white-space:normal}
 .dev{display:block;font-size:12px;color:var(--muted);white-space:normal}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:0 14px}
 .hint{color:var(--muted);font-size:12px;margin-top:5px;white-space:normal}
+.rem{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:16px;padding:12px 14px;border:1px solid var(--line);border-radius:14px;background:var(--bg)}
+.rem b{font-size:13.5px}.rem .hint{margin-top:2px}
 #toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);max-width:min(92vw,520px);padding:13px 18px;border-radius:14px;font-size:13.5px;
   background:var(--ink);color:var(--card);box-shadow:var(--shadow);z-index:50;white-space:pre-line}
 #toast.error{background:var(--bad);color:#fff}#toast.success{background:var(--ok);color:#fff}
@@ -176,7 +169,6 @@ td .muted{white-space:normal}
       </div>
     </div>
     <div class="road"></div>
-    <div id="loc-warn" class="status" hidden></div>
     <div class="clock" id="d-clk">--:--:--</div>
     <p class="muted center" id="d-dt"></p>
     <div class="today"><span id="d-st" class="pill">…</span></div>
@@ -186,6 +178,10 @@ td .muted{white-space:normal}
     <button class="orb alt" id="d-out" hidden>Sign Out</button>
     <p class="muted center" style="margin-top:14px">Location must be on. You must be at the office to Sign In and Sign Out.</p>
     <p class="muted center" id="d-leavenote" style="margin-top:10px;color:var(--bad)" hidden>You are on approved leave today. Cancel your leave before marking attendance.</p>
+    <div class="rem">
+      <div><b>Reminders</b><div class="hint" id="rem-note"></div></div>
+      <button class="sm ghost" id="rem-btn" type="button">Turn on</button>
+    </div>
     <div id="st-dash" class="status"></div>
   </div></div>
   <p class="center"><a href="#/leave">Apply for leave →</a></p>
@@ -653,8 +649,50 @@ async function getFix(onProgress) {
 /* =====================================================================
    EMPLOYEE DASHBOARD
    ===================================================================== */
-const D = { off: 0, signIn: '', signOut: '', marking: false };
+const D = { off: 0, signIn: '', signOut: '', status: '', marking: false };
 const LABEL = { none: 'Not marked', signed_in: 'Signed in', signed_out: 'Signed out', leave: 'On leave' };
+
+/* ---------- Sign In / Sign Out reminders (IST, HH:MM) ----------
+   Reminders are shown while this page is open. Each reminder repeats every 30 min
+   until the employee acts. */
+const REMIND = { in: '09:30', out: '18:00' };   // Sign In reminder time, Sign Out reminder time
+const REMIND_EVERY_MS = 30 * 60 * 1000;
+
+const remindOn = () => store.get('remind_on') === '1';
+function drawRemind() {
+  const on = remindOn();
+  $('rem-btn').textContent = on ? 'Turn off' : 'Turn on';
+  $('rem-note').textContent = on
+    ? 'On. Reminder to Sign In at ' + REMIND.in + ' and to Sign Out at ' + REMIND.out + ' while this page is open.'
+    : 'Get a notification at ' + REMIND.in + ' to Sign In and at ' + REMIND.out + ' to Sign Out.';
+}
+async function toggleRemind() {
+  if (remindOn()) { store.set('remind_on', '0'); drawRemind(); return; }
+  if (!('Notification' in window)) return toast('This browser does not support notifications. Use Chrome or Safari.', 'error');
+  let perm = Notification.permission;
+  if (perm === 'default') { try { perm = await Notification.requestPermission(); } catch (_) { perm = 'denied'; } }
+  if (perm !== 'granted') return toast('Notifications are blocked for this site. Allow them in your browser settings, then tap Turn on again.', 'error');
+  store.set('remind_on', '1');
+  drawRemind();
+  toast('Reminders are on.', 'success');
+  checkRemind();
+}
+function notifyUser(body) {
+  toast(body, 'info');
+  try { new Notification('Prithvi Realcon Attendance', { body, tag: 'attendance' }); } catch (_) { /* some mobile browsers need a service worker; the in-page toast still shows */ }
+}
+function checkRemind() {
+  if (!remindOn() || !D.status || Notification.permission !== 'granted') return;
+  const kind = D.status === 'none' ? 'in' : D.status === 'signed_in' ? 'out' : '';
+  if (!kind) return;
+  const hhmm = new Date(Date.now() + D.off).toLocaleTimeString('en-GB', { timeZone: 'Asia/Kolkata', hour: '2-digit', minute: '2-digit', hour12: false });
+  if (hhmm < REMIND[kind]) return;
+  const key = 'remind_last_' + kind;
+  if (Date.now() - (+store.get(key) || 0) < REMIND_EVERY_MS) return;
+  store.set(key, String(Date.now()));
+  notifyUser(kind === 'in' ? 'Reminder: please Sign In for today.' : 'Reminder: please Sign Out before you leave.');
+}
+$('rem-btn').onclick = toggleRemind;
 
 function tick() {
   const n = new Date(Date.now() + D.off);
@@ -667,6 +705,7 @@ function tick() {
     const s = toSec(n.toLocaleTimeString('en-GB', { timeZone: 'Asia/Kolkata' })) - toSec(D.signIn);
     $('d-wk').textContent = s > 0 ? 'Working · ' + hm(s) : '';
   } else $('d-wk').textContent = '';
+  checkRemind();
 }
 
 // Doubles as the heartbeat: the server records "last seen" on every call.
@@ -679,6 +718,7 @@ async function dashLoad() {
   D.off = new Date(data.now).getTime() - Date.now();
   D.signIn = data.sign_in || '';
   D.signOut = data.sign_out || '';
+  D.status = data.status;
   $('d-st').className = 'pill ' + data.status;
   $('d-st').textContent = LABEL[data.status] || data.status;
   $('d-tm').textContent = [data.sign_in && 'In ' + data.sign_in, data.sign_out && 'Out ' + data.sign_out].filter(Boolean).join('  ·  ');
@@ -688,47 +728,10 @@ async function dashLoad() {
   tick();
 }
 
-/* ---------- Location check on the dashboard (shows an Allow button or a fix hint) ---------- */
-async function checkLocation() {
-  const box = $('loc-warn');
-  let state = 'prompt';
-  try {
-    if (navigator.permissions) state = (await navigator.permissions.query({ name: 'geolocation' })).state;
-  } catch (_) {}
-
-  if (!('geolocation' in navigator) || window.isSecureContext === false) {
-    box.hidden = false; box.className = 'status error';
-    box.textContent = 'This browser cannot access location. Open the link in Chrome (Android) or Safari (iPhone).';
-    return;
-  }
-  if (state === 'granted') { box.hidden = true; return; }
-
-  box.hidden = false;
-  if (state === 'denied') {
-    box.className = 'status error';
-    box.textContent = 'Location is blocked for this site. Allow it in your browser settings (lock icon near the address bar), then reload this page.';
-    return;
-  }
-  box.className = 'status info';
-  box.innerHTML = '';
-  const txt = document.createElement('span');
-  txt.textContent = 'Location is needed to sign in. ';
-  const btn = document.createElement('button');
-  btn.className = 'sm accent';
-  btn.textContent = 'Allow location';
-  btn.onclick = () => {
-    navigator.geolocation.getCurrentPosition(
-      () => checkLocation(),
-      () => checkLocation(),
-      { enableHighAccuracy: true, timeout: 15000 }
-    );
-  };
-  box.append(txt, btn);
-}
-
 async function dashInit() {
   show('v-dash');
   say('st-dash', '');
+  drawRemind();
   const name = getEmpName();
   $('d-nm').textContent = name || '…';
   $('d-av').textContent = initials(name);
@@ -736,7 +739,6 @@ async function dashInit() {
   if (error) { if (handleErr(error)) return; say('st-dash', error.message, 'error'); }
   else { $('d-nm').textContent = me.name; $('d-av').textContent = initials(me.name); }
   await dashLoad();
-  checkLocation();
   every(tick, 1000);
   every(dashLoad, 30 * 1000);     // heartbeat + picks up admin logout / 23:59 auto sign-out
 }
@@ -1253,9 +1255,6 @@ document.addEventListener('click', async (ev) => {
 /* =====================================================================
    START
    ===================================================================== */
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('sw.js').catch(() => {});
-}
 fdLabelUpdate();
 window.addEventListener('unhandledrejection', (e) => { console.error(e.reason); });
 route();
