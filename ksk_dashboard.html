@@ -1,0 +1,411 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow" />
+<meta name="referrer" content="strict-origin-when-cross-origin" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>KSK Mahanadi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=Instrument+Sans:wght@400;500;600;700&display=swap">
+<style>
+:root{--line:rgba(15,23,42,.11);--txt:#0f172a;--mut:#5b6785;--teal:#0d9488;--amber:#d97706;--violet:#7c3aed;--sky:#0284c7;--gh:31px;--glass:rgba(255,255,255,.82)}
+*{box-sizing:border-box}html,body{margin:0;height:100%}
+body{font:14px Inter,system-ui,sans-serif;color:var(--txt);background:linear-gradient(135deg,#f8fafc,#eef2fb 55%,#f3eefb);display:grid;grid-template-rows:auto minmax(0,1fr) auto;height:100dvh;overflow:hidden}
+.hidden{display:none!important}.muted{color:var(--mut)}.num{text-align:right;font-variant-numeric:tabular-nums}.neg{color:#dc2626;font-weight:700}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:14px 18px 0;padding:14px 20px;border-radius:22px;background:linear-gradient(120deg,#0f2142 0%,#1b3a6b 60%,#1f6f8f 100%);color:#fff;box-shadow:0 18px 36px -18px rgba(15,33,66,.65)}
+.brand{display:flex;align-items:center;gap:12px}
+.brand h1{margin:0;font:700 clamp(1.2rem,1.2vw + .8rem,1.7rem) "Bricolage Grotesque",ui-sans-serif,system-ui,sans-serif;letter-spacing:-.02em;color:#fff;background:none;-webkit-text-fill-color:#fff}
+.brand small{color:#b8d3ee;font-size:.85rem;font-weight:500;display:block;margin-top:.1rem}
+.back{background:linear-gradient(120deg,#0f2142,#1b3a6b);color:#fff;border:1px solid rgba(255,255,255,.2);padding:.6rem 1.1rem;border-radius:12px;font:700 .85rem "Instrument Sans","Segoe UI",system-ui,sans-serif;text-decoration:none;display:inline-flex;align-items:center;gap:.45rem;box-shadow:0 10px 18px -10px rgba(0,0,0,.5);transition:.2s;cursor:pointer}
+.back:hover{transform:translateY(-2px)}
+.logo{height:44px;width:84px;flex:none;border-radius:10px;background:#fff;border:1px solid rgba(255,255,255,.3);display:grid;place-items:center;padding:2px;overflow:hidden;font-weight:800;font-size:18px;color:#0f9d7a;box-shadow:0 4px 14px rgba(0,0,0,.2)}
+.logo img{width:100%;height:100%;object-fit:contain;display:block}
+.top-r{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-left:auto}
+.pill{font:600 .85rem "Instrument Sans","Segoe UI",system-ui,sans-serif;padding:.5rem 1.1rem;border-radius:999px;background:#fff;color:#0a1530;border:1px solid #e1e8f3;box-shadow:0 1px 2px rgba(15,33,66,.06),0 10px 24px -12px rgba(15,33,66,.22);display:inline-flex;align-items:center}
+.pill.live{background:#fff;color:#0a1530}
+.pill.err{background:#fbebee;color:#b3162b;border-color:#f2c4cb}
+.dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#16a870;box-shadow:0 0 0 3px rgba(22,168,112,.25);margin-right:6px}
+.pill.err .dot{background:#d1344a;box-shadow:0 0 0 3px rgba(209,52,74,.25)}
+#updated{color:#b8d3ee!important;font-size:.8rem!important;font-weight:500}
+#refresh{background:rgba(255,255,255,.14)!important;color:#fff!important;border:1px solid rgba(255,255,255,.3)!important;border-radius:12px!important;font:600 .85rem "Instrument Sans","Segoe UI",system-ui,sans-serif!important;padding:.5rem 1rem!important}
+#refresh:hover{background:rgba(255,255,255,.24)!important}
+.dock{justify-self:center;margin:0 0 14px;display:flex;gap:6px;padding:6px;background:rgba(255,255,255,.88);backdrop-filter:blur(16px);border:1px solid var(--line);border-radius:999px;box-shadow:0 12px 34px rgba(15,23,42,.14)}
+.dock button{display:flex;align-items:center;gap:8px;border:0;background:transparent;color:var(--mut);padding:10px 18px;border-radius:999px;font:inherit;font-weight:600;cursor:pointer}
+.dock svg{width:18px;height:18px}.dock button.active{color:#fff;background:linear-gradient(135deg,#0d9488,#14b8a6);box-shadow:0 6px 18px rgba(13,148,136,.3)}
+main{min-height:0;overflow:hidden;padding:14px 18px 0}.view{height:100%;display:flex;flex-direction:column;min-height:0;gap:12px}
+input,select{background:#fff;border:1px solid var(--line);color:var(--txt);border-radius:10px;padding:9px 12px;font:inherit;min-width:0}
+input:focus,select:focus{outline:none;border-color:var(--sky);box-shadow:0 0 0 3px rgba(2,132,199,.15)}
+.chk{display:flex;gap:7px;align-items:center;font-weight:600;color:var(--mut)}
+.btn{background:#fff;border:1px solid var(--line);color:var(--txt);padding:9px 14px;border-radius:10px;font:inherit;font-weight:600;cursor:pointer}
+.btn:hover{background:#f1f5f9}.btn.primary{background:linear-gradient(135deg,#6366f1,#8b5cf6);border-color:transparent;color:#fff}
+.btn.teal{background:linear-gradient(135deg,#0d9488,#14b8a6);border-color:transparent;color:#fff}.btn.ghost{background:transparent}.btn.small{padding:5px 11px;font-size:12px}.btn.red{color:#be123c}.btn:disabled{opacity:.45}
+.toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center}.bar2{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
+.seg{display:inline-flex;padding:4px;background:rgba(15,23,42,.05);border:1px solid var(--line);border-radius:14px}
+.seg button{border:0;background:transparent;color:var(--mut);padding:9px 16px;border-radius:10px;font:inherit;font-weight:700;cursor:pointer}
+.seg button.active{color:#fff;background:linear-gradient(135deg,#0d9488,#14b8a6)}.seg button[data-p=r].active{background:linear-gradient(135deg,#d97706,#f59e0b)}.seg button[data-p=s].active{background:linear-gradient(135deg,#7c3aed,#a78bfa)}
+.page{flex:1;min-height:0;display:flex;flex-direction:column;gap:12px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px}
+.card{position:relative;overflow:hidden;background:var(--glass);border:1px solid var(--line);border-radius:16px;padding:14px 16px;box-shadow:0 2px 10px rgba(15,23,42,.06)}
+.card::before{content:"";position:absolute;left:0;right:0;top:0;height:3px;background:var(--c,var(--teal))}
+.card span{display:block;color:var(--mut);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em}.card b{display:block;font-size:24px;font-weight:800;margin-top:6px;font-variant-numeric:tabular-nums}.card small{color:var(--mut);font-size:12px}
+.card.r{--c:#d97706}.card.s{--c:#7c3aed}.card.k{--c:#0284c7}.card.o{--c:#059669}.card.x{--c:#e11d48}
+.glass{background:var(--glass);border:1px solid var(--line);border-radius:16px;box-shadow:0 2px 12px rgba(15,23,42,.05);overflow:hidden;display:flex;flex-direction:column;min-height:0;flex:1}
+.glass-h{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid var(--line)}.glass-h h2{margin:0;font-size:15px}.glass-h .sub,.info{color:var(--mut);font-size:12px}
+.glass.w .glass-h{background:linear-gradient(90deg,rgba(13,148,136,.16),rgba(13,148,136,.02))}.glass.r .glass-h{background:linear-gradient(90deg,rgba(217,119,6,.16),rgba(217,119,6,.02))}
+.info{padding:9px 16px;border-bottom:1px solid var(--line)}.sc{flex:1;min-height:0;overflow:auto}
+table{width:100%;border-collapse:separate;border-spacing:0;font-size:13px}
+th,td{padding:8px 12px;text-align:left;white-space:nowrap;border-bottom:1px solid rgba(15,23,42,.10)}td.t{max-width:220px;overflow:hidden;text-overflow:ellipsis}
+thead th{position:sticky;top:0;z-index:2;background:#eef2f9;color:#475569;font-size:11px;text-transform:uppercase;letter-spacing:.06em;border-bottom:2px solid rgba(15,23,42,.18)}
+thead tr.grp th{height:var(--gh);text-align:center;font-size:10.5px;font-weight:800;padding:0 6px;z-index:3;background:#e6ebf5}thead tr.grp+tr th{top:calc(var(--gh) - 1px)}
+th.so{cursor:pointer}
+.g1{--t:45,212,191}.g2{--t:251,191,36}.g3{--t:167,139,250}.g4{--t:56,189,248}
+td.g1,td.g2,td.g3,td.g4{background-color:rgba(var(--t),.09)}
+th.g1,th.g2,th.g3,th.g4{background:linear-gradient(rgba(var(--t),.22),rgba(var(--t),.22)),#eef2f9}
+.gs{border-left:1px solid rgba(15,23,42,.22)}tbody tr:hover td{background-image:linear-gradient(rgba(15,23,42,.07),rgba(15,23,42,.07))}
+tfoot td{position:sticky;bottom:0;z-index:2;background:#eef2f9;font-weight:800;border-top:2px solid rgba(15,23,42,.18)}
+tfoot td.g1,tfoot td.g2,tfoot td.g3,tfoot td.g4{background-color:#eef2f9;background-image:linear-gradient(rgba(var(--t),.18),rgba(var(--t),.18))}
+.empty{padding:30px;text-align:center;color:var(--mut)}.id{font-weight:700}
+.mv{display:inline-block;width:6px;height:6px;border-radius:50%;background:#d97706;margin-left:5px;vertical-align:middle}
+.badge{padding:2px 9px;border-radius:999px;font-size:10.5px;font-weight:800;background:rgba(217,119,6,.12);color:#b45309}
+.st{margin-left:8px;padding:1px 7px;border-radius:999px;font-size:9.5px;font-weight:800;text-transform:uppercase}
+.st.open{background:rgba(5,150,105,.12);color:#047857}.st.over{background:rgba(225,29,72,.1);color:#be123c}.st.done{background:rgba(100,116,139,.12);color:#475569}
+.alert{padding:10px 14px;border-radius:12px;background:rgba(249,115,22,.1);border:1px solid rgba(249,115,22,.35);color:#9a3412}
+.subtabs{display:flex;gap:8px;flex-wrap:wrap}.stab{border:1px solid var(--line);background:#fff;padding:9px 16px;border-radius:999px;font:inherit;font-weight:700;cursor:pointer;color:var(--mut)}.stab.active{background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;border-color:transparent}
+.eg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;flex:1;min-height:0}
+.panel{background:rgba(255,255,255,.88);border:1px solid var(--line);border-radius:16px;padding:16px;overflow:auto;min-height:0;border-top:3px solid var(--c,#7c3aed)}.panel h3{margin:0 0 12px;font-size:15px}
+.form{display:grid;grid-template-columns:1fr 1fr;gap:10px 12px}.fld{display:flex;flex-direction:column;gap:5px;min-width:0}.fld span{font-size:11px;font-weight:700;color:var(--mut);text-transform:uppercase;letter-spacing:.06em}.fld input,.fld select{width:100%}
+.fld input:not(:placeholder-shown).ov{border-color:#d97706;background:#fffbeb}.full{grid-column:1/-1}
+.form .row{grid-column:1/-1;display:flex;gap:8px;justify-content:flex-end}.msg{grid-column:1/-1;font-size:13px}.msg.err{color:#b91c1c}
+.note{grid-column:1/-1;font-size:12px;color:var(--mut)}
+.hero{flex:none;flex-direction:row;align-items:center;justify-content:space-between;padding:14px 18px;background:linear-gradient(120deg,rgba(124,58,237,.14),rgba(13,148,136,.08))}.hero h2{margin:2px 0;font-size:30px}
+.kv{padding:6px 16px 12px}.kv div{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px dashed rgba(15,23,42,.12)}
+.drop{border:2px dashed rgba(124,58,237,.4);border-radius:18px;padding:26px;text-align:center;background:rgba(124,58,237,.05);cursor:pointer}
+.xg{display:grid;grid-template-columns:minmax(290px,360px) minmax(0,1fr);gap:12px;flex:1;min-height:0}.xs{display:flex;flex-direction:column;gap:10px;padding:16px;flex:none}
+.cnt{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.cnt div{background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px;text-align:center}.cnt b{display:block;font-size:20px}
+.prog{height:8px;background:rgba(15,23,42,.08);border-radius:8px;overflow:hidden}.prog i{display:block;height:100%;width:0;background:linear-gradient(90deg,#7c3aed,#0284c7)}
+.ok{color:#047857}.dup{color:#b45309}.er{color:#b91c1c}
+dialog{border:1px solid var(--line);border-radius:18px;padding:20px;width:min(760px,94vw)}dialog::backdrop{background:rgba(15,23,42,.35)}
+.toast{position:fixed;left:50%;bottom:86px;transform:translateX(-50%);background:linear-gradient(135deg,#0d9488,#6366f1);color:#fff;padding:11px 18px;border-radius:12px;font-weight:700;z-index:50}.toast.err{background:#be123c}
+.capwrap{padding:24px;background:#f6f8fc}.caph{display:flex;justify-content:space-between;font-size:20px;font-weight:800;margin-bottom:14px}.capwrap .page{gap:14px;margin-bottom:16px}
+#p-r{overflow-y:auto;padding-bottom:6px}#p-r>.glass{flex:none}#p-r>.glass .sc{flex:none;height:440px;overflow:auto}
+@media(max-width:1100px){.eg{grid-template-columns:1fr 1fr}.xg{grid-template-columns:1fr}}
+@media(max-width:860px){body{height:auto;overflow:auto;display:flex;flex-direction:column}main{overflow:visible}.view{height:auto}.page,.glass{flex:none}.sc{max-height:62vh}.eg,.form{grid-template-columns:1fr}.dock{position:sticky;bottom:10px}.dock span{display:none}.brand small{display:none}}
+</style><meta name="pr-access" content="amm:JSW" />
+<meta name="description" content="KSK Mahanadi – Prithvi Realcon logistics and performance portal." />
+<meta name="theme-color" content="#1d4ed8" />
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+<link rel="apple-touch-icon" href="assets/icon-192.png" />
+<link rel="manifest" href="manifest.webmanifest" />
+<link rel="stylesheet" href="assets/prtpl.css" />
+<script src="assets/prtpl.js"></script>
+</head><body>
+<header class="top"><a class="back" href="amm_home.html"><span>←</span> Back</a><div class="brand"><div class="logo"><img src="https://www.financialexpress.com/wp-content/uploads/2025/01/jswenergy.FB_.jpg" alt="KSK Mahanadi" onerror="this.parentNode.textContent='K'"></div><div><h1>KSK Mahanadi</h1><small>Washery · RCR · Road sale</small></div></div><div class="top-r"><span id="status" class="pill">Starting…</span><span id="updated"></span><button id="refresh" class="btn">Refresh</button></div></header>
+<main>
+<section id="v-dashboard" class="view">
+ <div class="bar2"><div class="seg"><button data-p="w" class="active">Washery</button><button data-p="r">RCR &amp; Road sale</button><button data-p="s">D.O. Summary</button></div>
+ <div class="toolbar" id="flt"><input id="f-q" placeholder="Search D.O., colliery, party…" style="width:230px"><select id="f-col"></select><label class="chk"><input type="checkbox" id="f-hide"> Hide closed</label><button id="dl" class="btn teal small">⬇ Download image (both)</button></div></div>
+ <div id="alert" class="alert hidden"></div>
+ <div class="page" id="p-w"><div class="cards" id="c-w"></div><div class="glass w"><div class="glass-h"><h2>Washery D.O.s</h2><span class="sub" id="n-w"></span></div><div class="sc"><table id="t-w"></table></div></div></div>
+ <div class="page hidden" id="p-r"><div class="cards" id="c-r"></div>
+  <div class="glass r"><div class="glass-h"><h2>RCR D.O.s</h2><span class="sub" id="n-r"></span></div><div class="sc"><table id="t-r"></table></div></div>
+  <div class="glass r"><div class="glass-h"><h2>Road sale D.O.s</h2><span class="sub" id="n-o"></span></div><div class="sc"><table id="t-o"></table></div></div></div>
+ <div class="page hidden" id="p-s"><div class="toolbar"><div class="glass hero" style="flex:1"><div><div class="muted" style="font-weight:800;letter-spacing:.14em;font-size:11px">D.O. ANALYTICS</div><h2 id="h-do">–</h2><div class="sub muted" id="h-sub"></div></div><div id="h-st"></div></div><select id="s-do" style="min-width:300px"></select></div><div id="s-body" class="page"></div></div>
+</section>
+<section id="v-entry" class="view hidden">
+ <div class="subtabs"><button class="stab active" data-e="do">D.O. &amp; values</button><button class="stab" data-e="in">Inward entry</button><button class="stab" data-e="out">Dispatch entry</button></div>
+ <div id="e-do" class="eg" style="grid-template-rows:minmax(0,1fr)"></div>
+ <div id="e-in" class="eg hidden" style="grid-template-columns:minmax(0,640px)"><div class="panel"><h3>Inward (Receipt)</h3><div id="f-in"></div></div></div>
+ <div id="e-out" class="eg hidden" style="grid-template-columns:minmax(0,640px)"><div class="panel"><h3>Dispatch (Outward)</h3><div id="f-out"></div></div></div>
+</section>
+<section id="v-log" class="view hidden">
+ <div class="toolbar"><select id="l-t"><option value="ksk_inward">Inward</option><option value="ksk_dispatch">Dispatch</option><option value="ksk_dashboard_values">D.O. values</option></select>
+ <input type="date" id="l-from" title="From"><input type="date" id="l-to" title="To"><select id="l-do"></select><select id="l-sec" class="hidden"><option value="">All sections</option><option>WASHERY</option><option>RCR</option><option>ROAD</option></select><select id="l-ord"><option value="1">Newest first</option><option value="0">Oldest first</option></select></div>
+ <div class="toolbar" id="l-x"></div>
+ <div class="toolbar"><button id="l-go" class="btn primary small">Apply</button><button id="l-clr" class="btn ghost small">Clear</button><button id="l-exp" class="btn small">⬇ Export Excel</button><button id="l-pv" class="btn small">‹ Prev</button><button id="l-nx" class="btn small">Next ›</button></div>
+ <div class="glass"><div class="info" id="l-info"></div><div class="sc"><table id="t-log"></table></div></div>
+</section>
+<section id="v-excel" class="view hidden"><div class="xg"><div><div class="glass xs"><select id="x-t"><option value="ksk_inward">Inward</option><option value="ksk_dispatch">Dispatch</option><option value="ksk_dashboard_values">D.O. list (Summary)</option></select>
+ <div class="drop" id="drop"><b>Drop an Excel file here</b><br><small class="muted">or click (.xlsx, .xlsm, .xls)</small><input type="file" id="x-f" accept=".xlsx,.xlsm,.xls" hidden></div>
+ <select id="x-s" disabled><option>Choose a file first</option></select><div class="cnt"><div><b id="c-ok">0</b>Rows</div><div><b id="c-dup">0</b>Skipped</div><div><b id="c-err">0</b>Error</div></div><div class="prog"><i id="x-p"></i></div><button id="x-imp" class="btn primary" disabled>Replace all data with these rows</button>
+ <small class="muted">Every upload deletes all existing inward/dispatch rows and loads every non-empty row of the chosen sheet exactly as it appears. Manual entries are deleted too. Rows with a Direction/Type column are sorted by it; otherwise the dropdown above is used.</small></div></div>
+ <div class="glass"><div class="glass-h"><h2>Preview</h2><span class="sub" id="x-i">Upload a file to preview</span></div><div class="sc"><table id="t-x"></table></div></div></div></section>
+</main>
+<nav class="dock" id="dock"><button data-v="dashboard" class="active"><span>Dashboard</span></button><button data-v="entry"><span>Data entry</span></button><button data-v="log"><span>Log</span></button><button data-v="excel"><span>Excel upload</span></button></nav>
+<dialog id="dlg"><h3 id="dlg-t" style="margin:0 0 12px">Edit</h3><div id="dlg-b"></div><div style="text-align:right;margin-top:10px"><button class="btn ghost" onclick="$('#dlg').close()">Close</button></div></dialog>
+<div id="toast" class="toast hidden"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+const SB='https://lflsewvyhyfmuegksscy.supabase.co',KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxmbHNld3Z5aHlmbXVlZ2tzc2N5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE0NTY3MjIsImV4cCI6MjEwNzAzMjcyMn0.BKNDWGKs4MX7MFL4FD0ECesgFciFmMRpMdmQUnARj7s';
+const WASH=.85,REJ=.15;
+const db=window.supabase&&!KEY.startsWith('PASTE')?window.supabase.createClient(SB,KEY):null;
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const num=v=>{if(v===null||v===undefined||v==='')return null;const n=Number(String(v).replace(/,/g,'').trim());return Number.isFinite(n)?n:null};
+const r3=v=>Math.round(v*1000)/1000,p2=n=>String(n).padStart(2,'0');
+const fQ=v=>num(v)===null?'–':num(v).toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2});
+const fI=v=>num(v)===null?'–':num(v).toLocaleString('en-IN',{maximumFractionDigits:0});
+const sum=(a,k)=>a.reduce((s,x)=>s+(num(x[k])||0),0);
+function pd(s){if(s instanceof Date)return s;if(!s)return null;s=String(s).trim();let m=s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/),y,mo,d;
+ if(m){y=+m[1];mo=+m[2];d=+m[3]}else{m=s.match(/^(\d{1,2})\s*[-/.]\s*(\d{1,2})\s*[-/.]\s*(\d{2,4})$/);if(!m)return null;d=+m[1];mo=+m[2];y=+m[3];if(y<1000)y+=2000}
+ const t=new Date(y,mo-1,d);return isNaN(t)?null:t}
+const iso=t=>`${t.getFullYear()}-${p2(t.getMonth()+1)}-${p2(t.getDate())}`;
+const fD=s=>{const d=pd(s);return d?d.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}):(s||'–')};
+const normD=s=>{s=(s||'').trim();if(!s)return null;const d=pd(s);return d?iso(d):s};
+function toast(m,e){const t=$('#toast');t.textContent=m;t.className='toast'+(e?' err':'');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.add('hidden'),3800)}
+function setSt(t,c){const s=$('#status');s.innerHTML='<span class="dot"></span>'+esc(t);s.className='pill '+(c||'')}
+const exErr=e=>{if(!e)return'Unknown error';const s=(e.message||'')+' '+(e.code||'')+' '+(e.details||'');
+ if(/row-level|42501|permission denied/i.test(s))return'Blocked by database security rules: run ksk_setup_v3.sql';
+ if(/does not exist|42P01|schema cache|could not find the table/i.test(s))return'Table missing: run ksk_setup_v3.sql in Supabase (then reload)';
+ if(/23505|duplicate key/i.test(s))return'Duplicate: this D.O. or row already exists';
+ if(/22P02|22007|22008|invalid input/i.test(s))return'Invalid value in a number or date field';
+ return e.message||String(e)};
+async function fetchAll(b){let o=[];for(let f=0;;f+=1000){const{data,error}=await b().range(f,f+999);if(error)throw error;o=o.concat(data||[]);if(!data||data.length<1000)break}return o}
+
+/* ---- tables ---- */
+/* Inward and Dispatch are both stored in ksk_sheet_rows, told apart by `direction` (IN / OUT). */
+const SRC=t=>t=='ksk_dashboard_values'?t:'ksk_sheet_rows';
+const DIR={ksk_inward:'IN',ksk_dispatch:'OUT'};
+const TB={
+ksk_inward:{l:'Inward',dc:'rec_date',ord:'id',f:[['sn_no','Sn. No.','t'],['rec_date','Rec. Date','d',1],['ch_date','Ch. Date','d'],['excise_sr_no','Excise Sr. No.','t'],['unique_no','Unique No.','t'],['do_no','D.O. No.','t',1],['gate_pass','Gate Pass','t'],['grade','Grade','t'],['vehicle_no','Vehicle No.','t',1],['gross_wt','Gross Wt.','n',1],['tare_wt','Tare Wt.','n',1],['net_wt','Net Wt.','n',1],['rec_wt','Rec. Wt.','n'],['party_name','Party Name','t'],['mines','Mines','t']],x:['vehicle_no','unique_no','excise_sr_no','gate_pass','grade','mines','party_name'],sk:'net_wt'},
+ksk_dispatch:{l:'Dispatch',dc:'disp_date',ord:'id',f:[['sn_no','Sr. No.','t'],['disp_date','Date','d',1],['do_no','D.O. No.','t',1],['item','Item','t'],['vehicle_no','Vehicle No.','t',1],['gross_wt','Gross Wt.','n',1],['tare_wt','Tare Wt.','n',1],['net_wt','Net Wt.','n',1],['unique_no','Unique No.','t'],['rptp_no','RPTP No.','t'],['party_name','Party Name','t']],x:['vehicle_no','unique_no','rptp_no','item','party_name'],sk:'net_wt'},
+ksk_dashboard_values:{l:'D.O. values',dc:null,ord:'sn_no',f:[['do_no','D.O. No.','i',1],['section','Section','t'],['sn_no','Sn. No.','i'],['colliery','Colliery','t'],['party_name','Party','t'],['issue_date','Issue','t'],['sized','Sized','t'],['lapsing_date','Lapsing','t'],['do_qty','D.O. Qty','n'],['asking','Asking','n'],['daily_lift','Daily Lift','n'],['daily_dispatch','Daily Dispatch','n'],['rr_no','RR No','t'],['rr_date','RR Date','t'],['rr_qty','RR Qty','n'],['ch_qty','CH Qty','n']],x:['colliery','party_name','sized'],sk:'do_qty'}};
+const lab=(t,k)=>TB[t].f.find(f=>f[0]==k)[1];
+const S={vals:[],inS:{},dsS:{},rows:[],view:'dashboard',page:'w',sort:{w:{k:'_s',d:1},r:{k:'_s',d:1},o:{k:'_s',d:1}},pg:0,xl:{wb:null,rows:[],busy:false,skip:0}};
+
+/* ---- formulas (each can be overridden per D.O. via ov; override = formula disconnected) ---- */
+function calc(d,ov){ov=ov||d.ov||{};const m={},I=S.inS[d.do_no]||{trips:0,net:0},D=S.dsS[d.do_no]||{trips:0,net:0};
+ const pk=(k,f)=>{const v=num(ov[k]);if(v!==null){m[k]=1;return v}return f};
+ const trips=pk('trips',I.trips),rec=pk('rec_qty',r3(I.net)),mines=pk('mines_bal',r3((num(d.do_qty)||0)-rec)),wash=pk('wash_coal',r3(rec*WASH)),rej=pk('reject',r3(rec*REJ)),
+ dt=pk('disp_trips',D.trips),dq=pk('disp_qty',r3(D.net)),bal=pk('washery_bal',r3((d.section=='WASHERY'?wash:rec)-dq));
+ return{...d,trips,rec_qty:rec,mines_bal:mines,wash_coal:wash,reject:rej,disp_trips:dt,disp_qty:dq,washery_bal:bal,m}}
+const isClosed=x=>x.mines_bal<=.005&&(x.section=='ROAD'||x.washery_bal<=.005);
+const stRank=x=>isClosed(x)?2:(pd(x.lapsing_date)&&pd(x.lapsing_date)<new Date(new Date().toDateString())?1:0);
+const stPill=x=>['<span class="st open">Open</span>','<span class="st over">Overdue</span>','<span class="st done">Closed</span>'][stRank(x)];
+
+async function load(){if(!db)return setSt('Not connected','err');setSt('Loading…');
+ const[v,i,d]=await Promise.all([db.from('ksk_dashboard_values').select('*').order('sn_no'),db.from('ksk_inward_sum').select('*'),db.from('ksk_dispatch_sum').select('*')]);
+ const e=v.error||i.error||d.error;if(e){setSt('Error','err');return toast(exErr(e),true)}
+ S.vals=v.data;S.inS={};S.dsS={};i.data.forEach(r=>S.inS[r.do_no]={trips:r.trips,net:num(r.net_qty)||0});d.data.forEach(r=>S.dsS[r.do_no]={trips:r.trips,net:num(r.net_qty)||0});
+ /* grade (from inward) and loaded D.O. numbers (from dispatch) per D.O., for the RCR plant & loading columns */
+ S.gr={};S.ld={};
+ try{const sr=await fetchAll(()=>db.from('ksk_sheet_rows').select('id,do_key,do_no,grade,direction').order('id'));
+  sr.forEach(r=>{const k=String(r.do_key||'');if(!k)return;
+   if(r.direction=='IN'&&r.grade)S.gr[k]=r.grade;
+   if(r.direction=='OUT'&&r.do_no){(S.ld[k]=S.ld[k]||new Set()).add(String(r.do_no).trim())}})}catch(e){}
+ S.rows=S.vals.map(x=>{const c=calc(x),k=String(x.do_no);c.grade=S.gr[k]||null;c.loaded=S.ld[k]?[...S.ld[k]].join(', '):null;return c});setSt('Live','live');$('#updated').textContent='Updated '+new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
+ const nm=[...new Set(S.rows.map(x=>(x.colliery||'').trim()).filter(Boolean).map(s=>s.toLowerCase()))].sort(),c=$('#f-col').value;
+ $('#f-col').innerHTML='<option value="">All collieries</option>'+nm.map(n=>`<option value="${esc(n)}">${esc(n.replace(/^./,m=>m.toUpperCase()))}</option>`).join('');$('#f-col').value=c;
+ const dl=S.rows.map(x=>`<option value="${x.do_no}">${x.do_no} · ${esc(x.colliery||'')}</option>`).join('');
+ $('#l-do').innerHTML='<option value="">All D.O.s</option>'+dl;$('#s-do').innerHTML=dl;renderAll();pickOpts()}
+
+/* ---- dashboard ---- */
+const INFO=[['colliery','Colliery','t'],['party_name','Party','t'],['issue_date','Issue','dt'],['sized','Sized','t'],['lapsing_date','Lapsing','dt'],['do_no','D.O. No.','id'],['do_qty','D.O. Qty','q']];
+const MB=[['asking','Asking','q'],['daily_lift','Daily Lift','q'],['trips','Trips','i'],['rec_qty','Rec. Qty','q'],['mines_bal','Mines Bal.','q']];
+const TD={
+ w:{id:'#t-w',g:[['',INFO,0],['Mines balance',MB,2],['Dispatch (Outward)',[['daily_dispatch','Daily Dispatch','q'],['disp_trips','Trips','i'],['disp_qty','Dispatch Qty','q']],4],['Washery output',[['wash_coal','Wash Coal 85%','q'],['reject','Reject 15%','q'],['washery_bal','Washery Bal.','q']],3]]},
+ r:{id:'#t-r',g:[['',INFO,0],['Mines balance',MB,2],['Rake dispatch',[['disp_qty','Dispatch by Rake','q'],['washery_bal','Balance at IUIK','q']],1],['Rake details',[['rr_no','RR No.','t'],['rr_date','RR Date','dt'],['rr_qty','RR Qty','q'],['ch_qty','CH Qty','q']],4],['Plant & loading',[['rec_qty','Plant Rec Qty','q'],['grade','Loading Grade','t'],['loaded','Loaded D.O. No','t']],3]]},
+ o:{id:'#t-o',g:[['',INFO,0],['Lifting',[['daily_lift','Daily Lift','q'],['rec_qty','Lifted Qty','q'],['mines_bal','Bal. in Mines','q'],['disp_qty','Dispatch Qty','q']],2]]}};
+function cell(c,x){const[k,,t,g,gs]=c,v=x[k],cl=(g?'g'+g+' ':'')+(gs?'gs ':''),dot=x.m&&x.m[k]?'<i class="mv" title="Manual value"></i>':'';
+ if(t=='dt')return`<td class="${cl}">${fD(v)}</td>`;if(t=='id')return`<td class="${cl}id">${esc(v)}${stPill(x)}</td>`;
+ if(t=='q'||t=='i'){const n=(k=='mines_bal'||k=='washery_bal')&&num(v)<-.005;return`<td class="${cl}num ${n?'neg':''}">${t=='q'?fQ(v):fI(v)}${dot}</td>`}
+ return v==null||v===''?`<td class="${cl}"><span class="muted">–</span></td>`:`<td class="${cl}t" title="${esc(v)}">${esc(v)}</td>`}
+function drawT(key,rows){const T=TD[key],cols=[],sr=S.sort[key];T.g.forEach(([,cs,g],gi)=>cs.forEach((c,ci)=>cols.push([...c,g,gi&&!ci])));
+ const ar=k=>sr.k==k?(sr.d>0?' ▲':' ▼'):'';
+ rows=[...rows].sort((a,b)=>{if(sr.k=='_s')return(stRank(a)-stRank(b))*sr.d||a.sn_no-b.sn_no;const x=a[sr.k],y=b[sr.k];if(x==null)return 1;if(y==null)return -1;return(typeof x=='number'?x-y:String(x).localeCompare(String(y),'en-IN',{numeric:true}))*sr.d});
+ $(T.id).innerHTML=`<thead><tr class="grp">${T.g.map(([l,cs,g])=>`<th colspan="${cs.length}" class="${g?'g'+g:''}">${esc(l)}</th>`).join('')}</tr><tr>${cols.map(c=>`<th data-k="${c[0]}" data-t="${key}" class="so ${c[3]?'g'+c[3]:''} ${c[2]=='q'||c[2]=='i'?'num':''} ${c[4]?'gs':''}">${esc(c[1])}${ar(c[0])}</th>`).join('')}</tr></thead>`+
+ (rows.length?'<tbody>'+rows.map(x=>'<tr>'+cols.map(c=>cell(c,x)).join('')+'</tr>').join('')+'</tbody><tfoot><tr>'+cols.map((c,i)=>i==0?`<td>Total · ${rows.length}</td>`:c[2]=='q'||c[2]=='i'?`<td class="num ${c[3]?'g'+c[3]:''}">${c[2]=='q'?fQ(sum(rows,c[0])):fI(sum(rows,c[0]))}</td>`:'<td></td>').join('')+'</tr></tfoot>':`<tbody><tr><td class="empty" colspan="${cols.length}">No D.O.s match.</td></tr></tbody>`);
+ return rows.length}
+const card=(l,v,c,s,f)=>`<div class="card ${c}"><span>${l}</span><b>${f=='i'?fI(v):fQ(v)}</b><small>${s||''}</small></div>`;
+function filt(sec){const q=$('#f-q').value.trim().toLowerCase(),c=$('#f-col').value,h=$('#f-hide').checked;
+ return S.rows.filter(x=>sec.includes(x.section)&&(!c||(x.colliery||'').trim().toLowerCase()==c)&&(!h||!isClosed(x))&&(!q||[x.do_no,x.colliery,x.party_name].join(' ').toLowerCase().includes(q)))}
+function renderAll(){const W=filt(['WASHERY']),R=filt(['RCR']),O=filt(['ROAD']),aw=S.rows.filter(x=>x.section=='WASHERY'),ar=S.rows.filter(x=>x.section!='WASHERY');
+ $('#c-w').innerHTML=card('D.O. quantity',sum(aw,'do_qty'),'',aw.length+' D.O.s')+card('Received',sum(aw,'rec_qty'),'',`${sum(aw,'do_qty')?(sum(aw,'rec_qty')/sum(aw,'do_qty')*100).toFixed(1):0}% of D.O. qty`)+card('Dispatched',sum(aw,'disp_qty'),'k',`${sum(aw,'wash_coal')?(sum(aw,'disp_qty')/sum(aw,'wash_coal')*100).toFixed(1):0}% of 85% output`)+card('Washery balance',sum(aw,'washery_bal'),'o','Output not yet dispatched')+card('Mines balance',sum(aw,'mines_bal'),'r','D.O. qty not yet received');
+ $('#c-r').innerHTML=card('D.O. quantity',sum(ar,'do_qty'),'r',ar.length+' RCR + Road D.O.s')+card('Lifted',sum(ar,'rec_qty'),'r','RCR + Road')+card('Balance in mines',sum(ar,'mines_bal'),'x','Not yet lifted')+card('RCR balance at IUIK',sum(ar.filter(x=>x.section=='RCR'),'washery_bal'),'o','Lifted − rake dispatch')+card('Active D.O.s',ar.filter(x=>!isClosed(x)).length,'s','Balance above zero','i');
+ const n=[drawT('w',W),drawT('r',R),drawT('o',O)];$('#n-w').textContent=`${W.length} of ${aw.length} shown`;$('#n-r').textContent=`${R.length} shown`;$('#n-o').textContent=`${O.length} shown`;
+ const known=new Set(S.vals.map(x=>String(x.do_no))),un=[...new Set([...Object.keys(S.inS),...Object.keys(S.dsS)])].filter(d=>!known.has(String(d)));
+ $('#alert').classList.toggle('hidden',!un.length);$('#alert').innerHTML=un.length?`<b>${un.length} D.O. number(s) in the Excel data are not in the D.O. list, so they are not shown:</b> ${esc(un.slice(0,25).join(', '))}${un.length>25?' … and '+(un.length-25)+' more':''}. Add them under Data entry → D.O. &amp; values.`:''}
+function setPage(p){S.page=p;$$('.seg button').forEach(b=>b.classList.toggle('active',b.dataset.p==p));['w','r','s'].forEach(x=>$('#p-'+x).classList.toggle('hidden',x!=p));$('#flt').classList.toggle('hidden',p=='s');p=='s'?loadSum():renderAll()}
+async function loadSum(){const d=S.rows.find(x=>x.do_no==$('#s-do').value)||S.rows[0];if(!d)return;$('#s-do').value=d.do_no;$('#h-do').textContent=d.do_no;
+ $('#h-sub').textContent=`${d.colliery||'–'} · ${d.party_name||'–'} · Issued ${fD(d.issue_date)} · Lapses ${fD(d.lapsing_date)}`;$('#h-st').innerHTML=stPill(d);
+ const w=d.section=='WASHERY';
+ const{data}=await db.from('ksk_sheet_rows').select('direction,rec_date,disp_date,vehicle_no,net_wt,unique_no').eq('do_key',String(d.do_no)).order('id',{ascending:false}).limit(50);
+ const rc=(data||[]).map(x=>x.direction=='IN'?[x.rec_date,'IN',x.vehicle_no,x.net_wt,x.unique_no]:[x.disp_date,'OUT',x.vehicle_no,x.net_wt,x.unique_no]);
+ $('#s-body').innerHTML=`<div class="cards">${card('D.O. quantity',d.do_qty,w?'':'r',d.section)}${card('Received / lifted',d.rec_qty,'',`${d.trips} trips`,'q')}${card('Mines balance',d.mines_bal,'r','D.O. qty − received')}${w?card('Wash coal 85%',d.wash_coal,'s','Reject 15%: '+fQ(d.reject)):''}${card('Dispatched',d.disp_qty,'k',d.disp_trips+' trips')}${card(w?'Washery balance':'Balance at IUIK',d.washery_bal,'o','')}</div>
+ <div class="glass"><div class="glass-h"><h2>Recent movements</h2><span class="sub">latest entries</span></div><div class="sc"><table><thead><tr><th>Date</th><th>Type</th><th>Vehicle</th><th class="num">Net (MT)</th><th>Unique no.</th></tr></thead><tbody>${rc.map(r=>`<tr><td>${esc(r[0]||'–')}</td><td><span class="badge">${r[1]}</span></td><td>${esc(r[2])}</td><td class="num">${esc(r[3]??'–')}</td><td class="muted">${esc(r[4]||'')}</td></tr>`).join('')||'<tr><td colspan="5" class="empty">No entries for this D.O.</td></tr>'}</tbody></table></div></div>`}
+async function capture(){if(!window.html2canvas)return toast('Image library did not load',true);
+ const w=document.createElement('div');w.className='capwrap';w.style.cssText='position:fixed;left:-20000px;top:0;width:1500px';w.innerHTML=`<div class="caph"><span>KSK Mahanadi · Stock summary</span><span>${new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'long',year:'numeric'})}</span></div>`;
+ ['#p-w','#p-r'].forEach(s=>{const c=$(s).cloneNode(true);c.classList.remove('hidden');c.querySelectorAll('[id]').forEach(n=>n.removeAttribute('id'));c.removeAttribute('id');[c,...c.querySelectorAll('.sc,.glass,.page')].forEach(n=>n.style.cssText+=';height:auto!important;max-height:none!important;overflow:visible!important;flex:none!important');w.appendChild(c)});
+ document.body.appendChild(w);
+ /* widen the capture to the widest table so no right-hand columns are cut off */
+ const wide=Math.max(1500,...[...w.querySelectorAll('table')].map(t=>t.getBoundingClientRect().width));
+ w.style.width=(wide+48)+'px';
+ try{toast('Preparing image…');const cv=await html2canvas(w,{backgroundColor:'#f6f8fc',scale:2,logging:false}),a=document.createElement('a');a.download=`ksk-mahanadi-${iso(new Date())}.png`;a.href=cv.toDataURL('image/png');a.click();toast('Image downloaded')}catch(e){toast('Image failed: '+e.message,true)}finally{w.remove()}}
+
+/* ---- entry forms (inward / dispatch) ---- */
+function mkForm(t,o={}){const T=TB[t],v=o.values||{},f=document.createElement('form');f.className='form';
+ f.innerHTML=T.f.map(([k,l,ty,rq])=>`<label class="fld"><span>${l}${rq?' *':''}</span><input type="${ty=='d'?'date':ty=='t'?'text':'number'}" ${ty=='t'?'':'step="any"'} name="${k}" value="${esc(v[k]??'')}" ${k=='vehicle_no'?'style="text-transform:uppercase"':''}></label>`).join('')+`<div class="msg"></div><div class="row">${o.edit?'':'<button type="button" class="btn ghost" data-c>Clear</button>'}<button class="btn primary">${o.edit?'Save changes':'Save entry'}</button></div>`;
+ f.querySelector('[data-c]')?.addEventListener('click',()=>f.reset());
+ f.addEventListener('submit',async e=>{e.preventDefault();const m=f.querySelector('.msg'),p={};m.className='msg';m.textContent='';
+  for(const[k,l,ty,rq]of T.f){let x=f.elements[k].value.trim();if(ty=='n'||ty=='i'){x=x===''?null:Number(x);if(x!==null&&(!Number.isFinite(x)||(ty=='i'&&!Number.isInteger(x))))return m.className='msg err',m.textContent=l+': enter a valid number'}else x=x||null;
+   if(k=='vehicle_no'&&x)x=x.toUpperCase();if(rq&&x===null)return m.className='msg err',m.textContent=l+' is required';p[k]=typeof x=='number'?String(x):x}
+  if(!DIR[t]&&!S.vals.some(d=>d.do_no==p.do_no)&&!(await PRTPL.confirm(`D.O. ${p.do_no} is not in the dashboard list. Save anyway?`,{title:'D.O. not in list',okLabel:'Save anyway',danger:false})))return;
+  if(DIR[t]&&!S.vals.some(d=>String(d.do_no)==p.do_no)&&!(await PRTPL.confirm(`D.O. ${p.do_no} is not in the dashboard list. Save anyway?`,{title:'D.O. not in list',okLabel:'Save anyway',danger:false})))return;
+  const b=f.querySelector('.primary');b.disabled=true;
+  const dir=DIR[t]?{direction:DIR[t]}:{};
+  const{error}=o.edit?await db.from(SRC(t)).update({...p,...dir}).eq('id',v.id):await db.from(SRC(t)).insert({...p,...dir,source_sheet:'MANUAL'});
+  b.disabled=false;
+  if(error)return m.className='msg err',m.textContent=exErr(error);toast(o.edit?'Changes saved':'Entry saved');
+  if(!o.edit){const keep={};['rec_date','disp_date','ch_date','do_no','party_name','mines','grade','item'].forEach(k=>{if(f.elements[k])keep[k]=f.elements[k].value});f.reset();for(const k in keep)f.elements[k].value=keep[k]}
+  o.done?.()});return f}
+
+/* ---- D.O. & values form: 3 panels, overrides per value ---- */
+const OVK=[['trips','Trips'],['rec_qty','Rec. Qty (net sum of inward)'],['mines_bal','Mines Bal.'],['wash_coal','Wash Coal 85%'],['reject','Reject Coal 15%'],['disp_trips','Dispatch Trips'],['disp_qty','Dispatch Qty'],['washery_bal','Washery Bal. / Balance at IUIK']];
+function buildDo(){const fl=(n,l,t='text',x='')=>`<label class="fld ${x}"><span>${l}</span><input name="${n}" type="${t}" ${t=='number'?'step="any"':''}></label>`;
+ $('#e-do').innerHTML=`<form id="do-f" class="eg" style="grid-column:1/-1;grid-template-columns:repeat(3,minmax(0,1fr))" novalidate>
+ <div class="panel" style="--c:#0d9488"><h3>1 · D.O. details</h3><div class="form"><label class="fld full"><span>Edit existing D.O.</span><select id="do-pick"></select></label>
+ <label class="fld"><span>Section *</span><select name="section"><option>WASHERY</option><option>RCR</option><option>ROAD</option></select></label>${fl('do_no','D.O. No *','number')}${fl('colliery','Colliery')}${fl('party_name','Party')}${fl('issue_date','Issue (dd-mm-yyyy or text)')}${fl('sized','Sized')}${fl('lapsing_date','Lapsing (dd-mm-yyyy or text)')}${fl('do_qty','D.O. Qty (MT)','number')}${fl('sn_no','Sn. No.','number')}</div></div>
+ <div class="panel" style="--c:#d97706"><h3>2 · Manual values</h3><div class="form">${fl('asking','Asking')}${fl('daily_lift','Daily Lift')}${fl('daily_dispatch','Daily Dispatch')}<div class="note full">Rake details (RCR only)</div>${fl('rr_no','RR No.')}${fl('rr_date','RR Date')}${fl('rr_qty','RR Qty','number')}${fl('ch_qty','CH Qty','number')}
+ <div class="msg"></div><div class="row"><button type="button" class="btn red" id="do-del">Delete D.O.</button><button class="btn primary">Save D.O.</button></div></div></div>
+ <div class="panel" style="--c:#7c3aed"><h3>3 · Override calculated values</h3><div class="form"><div class="note">Empty = calculated from inward / dispatch (placeholder shows the formula result). Type a value to set it manually; that value stops following the formula.</div>
+ ${OVK.map(([k,l])=>`<label class="fld full"><span>${l}</span><input class="ov" type="number" step="any" name="ov_${k}" placeholder=" "></label>`).join('')}<div class="row"><button type="button" class="btn ghost" id="ov-reset">Reset all to formula</button></div></div></div></form>`;
+ const f=$('#do-f');f.addEventListener('input',ph);$('#do-pick').addEventListener('change',fillDoForm);
+ $('#ov-reset').onclick=()=>{OVK.forEach(([k])=>f.elements['ov_'+k].value='');ph()};
+ $('#do-del').onclick=async()=>{const n=f.elements.do_no.value;if(!$('#do-pick').value||!(await PRTPL.confirm(`Delete D.O. ${n} from the list? Inward/dispatch entries are kept.`,{title:'Delete D.O.?',okLabel:'Delete'})))return;const{error}=await db.from('ksk_dashboard_values').delete().eq('do_no',n);error?toast(exErr(error),true):(toast('D.O. deleted'),$('#do-pick').value='',await load())};
+ f.addEventListener('submit',async e=>{e.preventDefault();const m=f.querySelector('.msg'),g=k=>f.elements[k].value.trim(),n=k=>g(k)===''?null:Number(g(k));m.className='msg';m.textContent='';
+  const dn=n('do_no');if(!Number.isInteger(dn))return m.className='msg err',m.textContent='D.O. No is required (whole number)';
+  const ov={};OVK.forEach(([k])=>{const v=n('ov_'+k);if(v!==null&&Number.isFinite(v))ov[k]=v});
+  const p={do_no:dn,section:g('section'),sn_no:n('sn_no'),colliery:g('colliery')||null,party_name:g('party_name')||null,issue_date:normD(g('issue_date')),sized:g('sized')||null,lapsing_date:normD(g('lapsing_date')),do_qty:n('do_qty'),asking:n('asking'),daily_lift:n('daily_lift'),daily_dispatch:n('daily_dispatch'),rr_no:g('rr_no')||null,rr_date:normD(g('rr_date')),rr_qty:n('rr_qty'),ch_qty:n('ch_qty'),ov,updated_at:new Date().toISOString()};
+  const{error}=await db.from('ksk_dashboard_values').upsert(p,{onConflict:'do_no'});if(error)return m.className='msg err',m.textContent=exErr(error);toast('D.O. saved');await load();$('#do-pick').value=dn;fillDoForm()})}
+function ph(){const f=$('#do-f');if(!f)return;const dn=Number(f.elements.do_no.value),base=S.vals.find(x=>x.do_no==dn)||{do_no:dn,section:f.elements.section.value,do_qty:num(f.elements.do_qty.value)||0},ov={};
+ OVK.forEach(([k])=>{const v=num(f.elements['ov_'+k].value);if(v!==null)ov[k]=v});const d={...base,section:f.elements.section.value,do_qty:num(f.elements.do_qty.value)||0};
+ OVK.forEach(([k])=>{const o2={...ov};delete o2[k];f.elements['ov_'+k].placeholder='formula: '+fQ(calc(d,o2)[k])})}
+function pickOpts(){const pk=$('#do-pick');if(!pk)return;const cur=pk.value;
+ pk.innerHTML='<option value="">➕ New D.O.</option>'+S.rows.map(x=>`<option value="${x.do_no}">${x.do_no} · ${x.section} · ${esc(x.colliery||'')}</option>`).join('');pk.value=S.rows.some(x=>x.do_no==cur)?cur:'';ph()}
+function fillDoForm(){const f=$('#do-f');if(!f)return;pickOpts();const pk=$('#do-pick');
+ const d=S.vals.find(x=>x.do_no==pk.value)||{section:'WASHERY',ov:{}};
+ ['section','do_no','colliery','party_name','issue_date','sized','lapsing_date','do_qty','sn_no','asking','daily_lift','daily_dispatch','rr_no','rr_date','rr_qty','ch_qty'].forEach(k=>f.elements[k].value=d[k]??'');
+ OVK.forEach(([k])=>f.elements['ov_'+k].value=(d.ov||{})[k]??'');f.elements.do_no.readOnly=!!pk.value;ph()}
+
+/* ---- log ---- */
+function logQ(sel,opt){const t=$('#l-t').value,T=TB[t];let q=db.from(SRC(t)).select(sel,opt);const g=id=>$(id).value;
+ if(DIR[t])q=q.eq('direction',DIR[t]);
+ if(T.dc){g('#l-from')&&(q=q.gte(T.dc,g('#l-from')));g('#l-to')&&(q=q.lte(T.dc,g('#l-to')))}
+ g('#l-do')&&(q=q.eq(DIR[t]?'do_key':'do_no',g('#l-do')));t=='ksk_dashboard_values'&&g('#l-sec')&&(q=q.eq('section',g('#l-sec')));
+ T.x.forEach(k=>{const v=$('#lx-'+k)?.value.trim().replace(/[,()*%]/g,' ');v&&(q=q.ilike(k,`%${v}%`))});return q}
+function setupLog(){const t=$('#l-t').value,T=TB[t];$('#l-x').innerHTML=T.x.map(k=>`<input id="lx-${k}" placeholder="${lab(t,k)}" style="width:140px">`).join('');
+ $$('#l-from,#l-to').forEach(e=>e.classList.toggle('hidden',!T.dc));$('#l-sec').classList.toggle('hidden',t!='ksk_dashboard_values');$('#l-ord').value=t=='ksk_dashboard_values'?'0':'1';$('#l-x').onkeydown=e=>e.key=='Enter'&&(S.pg=0,renderLog())}
+async function renderLog(){if(!db)return;const t=$('#l-t').value,T=TB[t],PS=500,asc=$('#l-ord').value=='0';$('#l-info').textContent='Loading…';
+ const{data,error,count}=await logQ('*',{count:'exact'}).order(T.ord,{ascending:asc}).range(S.pg*PS,S.pg*PS+PS-1);
+ if(error){$('#l-info').textContent='';return toast(exErr(error),true)}
+ let tot='';try{tot=' · total '+fQ(sum(await fetchAll(()=>logQ(T.sk).order(T.ord)),T.sk))+' MT ('+lab(t,T.sk)+')'}catch(e){}
+ $('#l-info').textContent=`${count} row${count==1?'':'s'} · showing ${count?S.pg*PS+1:0}–${S.pg*PS+data.length}${tot}`;$('#l-pv').disabled=S.pg==0;$('#l-nx').disabled=(S.pg+1)*PS>=count;
+ const ed=t!='ksk_dashboard_values'?'edit':'open';
+ $('#t-log').innerHTML=`<thead><tr>${T.f.map(f=>`<th class="${f[2]=='n'?'num':''}">${f[1]}</th>`).join('')}<th></th></tr></thead><tbody>`+(data.length?data.map(r=>'<tr>'+T.f.map(([k,,ty])=>{const v=r[k];return v==null||v===''?'<td class="muted">–</td>':ty=='n'?`<td class="num">${fQ(v)}</td>`:ty=='i'?`<td class="num">${v}</td>`:ty=='d'&&t!='ksk_dashboard_values'?`<td>${esc(v)}</td>`:`<td class="t" title="${esc(v)}">${esc(v)}</td>`}).join('')+`<td><button class="btn small" data-a="${ed}" data-id="${r.id??r.do_no}">${ed=='edit'?'Edit':'Open'}</button>${ed=='edit'?` <button class="btn small red" data-a="del" data-id="${r.id}">Delete</button>`:''}</td></tr>`).join(''):`<tr><td class="empty" colspan="${T.f.length+1}">No records match.</td></tr>`)+'</tbody>';
+ $('#t-log')._r=data}
+async function expLog(){const t=$('#l-t').value;try{const d=await fetchAll(()=>logQ('*').order(TB[t].ord));const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(d.map(r=>{const o={};TB[t].f.forEach(f=>o[f[1]]=r[f[0]]);return o})),TB[t].l);XLSX.writeFile(wb,`ksk-${TB[t].l}-${iso(new Date())}.xlsx`)}catch(e){toast(exErr(e),true)}}
+
+/* ---- excel upload: whole sheet, as it is, replaces all rows ---- */
+const nk=s=>String(s??'').toLowerCase().replace(/[^a-z0-9]/g,'');
+const AL={snno:'sn_no',srno:'sn_no',chdate:'ch_date',dono:'do_no',grosswt:'gross_wt',tarewt:'tare_wt',netwt:'net_wt',recwt:'rec_wt',partyname:'party_name',uniqueno:'unique_no',vehicleno:'vehicle_no',excisesrno:'excise_sr_no',gatepass:'gate_pass',rptpno:'rptp_no',recdate:'rec_date',dispdate:'disp_date'};
+const FIELDS=['sn_no','rec_date','ch_date','disp_date','excise_sr_no','unique_no','do_no','gate_pass','grade','vehicle_no','gross_wt','tare_wt','net_wt','rec_wt','party_name','mines','item','rptp_no'];
+async function parseSheet(){const sheet=$('#x-s').value,ws=S.xl.wb.Sheets[sheet];
+ const isDo=$('#x-t').value=='ksk_dashboard_values';
+ const rows=XLSX.utils.sheet_to_json(ws,{header:1,raw:isDo,defval:null,blankrows:false});
+ const h=rows.findIndex(r=>r.some(c=>nk(c)=='dono'));
+ if(h<0)return xMsg('No header row with "D.O. No" found in this sheet.');
+ const heads=rows[h].map((c,i)=>({i,key:nk(c)})).filter(x=>x.key);
+ if(isDo)return parseDoList(rows,h,heads,sheet);
+ const keys=heads.map(x=>x.key);
+ /* direction comes from the sheet's own headers, so an Inward sheet can never be saved as Dispatch */
+ const sheetDir=keys.some(k=>k=='rptpno'||k=='dispdate')?'OUT':keys.some(k=>k=='excisesrno'||k=='recdate'||k=='gatepass')?'IN':null;
+ if(sheetDir)$('#x-t').value=sheetDir=='IN'?'ksk_inward':'ksk_dispatch';
+ const dir=sheetDir||($('#x-t').value==='ksk_inward'?'IN':'OUT');
+ S.xl.dir=dir;
+ const map={};heads.forEach(({i,key})=>{const f=FIELDS.find(f=>nk(f)==key)||AL[key]||(key=='date'&&dir=='OUT'?'disp_date':null);if(f&&!(f in map))map[f]=i});
+ const out=[];
+ for(let i=h+1;i<rows.length;i++){const r=rows[i];
+  if(r.every(c=>c==null||String(c).trim()===''))continue;
+  if(nk(r[map.do_no])=='dono')continue;
+  const raw={};heads.forEach(({i:j,key})=>raw[key]=r[j]==null?null:String(r[j]).trim());
+  const o={_row:i+1,_s:'ok',_err:'',direction:dir,source_sheet:sheet,source_row:i+1,raw};
+  FIELDS.forEach(f=>{const j=map[f];o[f]=j==null||r[j]==null||String(r[j]).trim()===''?null:String(r[j]).trim()});
+  out.push(o)}
+ S.xl.rows=out;S.xl.skip=0;drawX()}
+function parseDoList(rows,h,heads,sheet){
+ const DOF={snno:'sn_no',colliery:'colliery',partyname:'party_name',issuedate:'issue_date',issuedt:'issue_date',sized:'sized',lapsingdate:'lapsing_date',lapsingdt:'lapsing_date',dono:'do_no',doqty:'do_qty',asking:'asking',dailylift:'daily_lift',dailydispatch:'daily_dispatch',section:'section'};
+ const map={};heads.forEach(({i,key})=>{const f=DOF[key];if(f&&!(f in map))map[f]=i});
+ if(map.do_no==null)return xMsg('No "D.O. No" column found.');
+ const num=x=>{if(x==null||x==='')return null;const n=Number(String(x).replace(/,/g,''));return Number.isFinite(n)?n:null};
+ const txt=x=>x instanceof Date?iso(x):(x==null||String(x).trim()===''?null:String(x).trim());
+ const out=[];
+ for(let i=h+1;i<rows.length;i++){const r=rows[i],v=f=>map[f]==null?null:r[map[f]];
+  const dn=v('do_no');if(dn==null||String(dn).trim()==='')continue;
+  const dnum=Number(String(dn).replace(/,/g,''));
+  const sec=String(v('section')??'WASHERY').toUpperCase().trim();
+  const ok=Number.isInteger(dnum);
+  out.push({_row:i+1,_s:ok?'ok':'er',_err:ok?'':'D.O. No is not a whole number',
+   do_no:ok?dnum:null,section:['WASHERY','RCR','ROAD'].includes(sec)?sec:'WASHERY',
+   sn_no:num(v('sn_no')),colliery:txt(v('colliery')),party_name:txt(v('party_name')),
+   issue_date:txt(v('issue_date')),sized:txt(v('sized')),lapsing_date:txt(v('lapsing_date')),
+   do_qty:num(v('do_qty')),asking:num(v('asking')),daily_lift:num(v('daily_lift')),daily_dispatch:num(v('daily_dispatch')),
+   direction:'',source_sheet:sheet,source_row:i+1});
+ }
+ S.xl.rows=out;S.xl.skip=0;drawX()}
+function xMsg(m){S.xl.rows=[];$('#t-x').innerHTML=`<tbody><tr><td class="empty">${esc(m)}</td></tr></tbody>`;$('#x-i').textContent=m;cntX()}
+function cntX(){const ok=S.xl.rows.filter(r=>r._s=='ok').length;$('#c-ok').textContent=fI(ok);$('#c-dup').textContent='0';$('#c-err').textContent=fI(S.xl.rows.length-ok);$('#x-imp').disabled=!ok||S.xl.busy}
+function drawX(){cntX();const t=$('#x-t').value,T=TB[t],r=S.xl.rows;$('#x-i').textContent=`${r.length} rows · blank lines skipped · showing first 150`;
+ $('#t-x').innerHTML=`<thead><tr><th>Row</th><th>Dir</th>${T.f.map(f=>`<th>${f[1]}</th>`).join('')}</tr></thead><tbody>`+r.slice(0,150).map(o=>`<tr><td class="muted">${o._row}</td><td>${o.direction}</td>${T.f.map(([k,,ty])=>`<td>${o[k]==null?'–':ty=='n'?fQ(o[k]):esc(o[k])}</td>`).join('')}</tr>`).join('')+'</tbody>'}
+function loadX(file){const rd=new FileReader();rd.onload=e=>{try{S.xl.wb=XLSX.read(e.target.result,{type:'array'})}catch(x){return toast('Cannot read file: '+x.message,true)}
+ const n=S.xl.wb.SheetNames,s=$('#x-s');s.disabled=false;s.innerHTML=n.map(x=>`<option>${esc(x)}</option>`).join('');guess();parseSheet().catch(x=>toast(exErr(x),true))};rd.readAsArrayBuffer(file)}
+const guess=()=>{const n=S.xl.wb.SheetNames;$('#x-s').value=n[0]};
+async function impX(){const all=S.xl.rows;if(!all.length||S.xl.busy)return;
+ const rows=all.filter(r=>r._s=='ok');
+ if(!rows.length)return toast('No valid rows to load',true);
+ if($('#x-t').value=='ksk_dashboard_values'){
+  if(!(await PRTPL.confirm(`Add or update ${fI(rows.length)} D.O.s in the D.O. list from this sheet? Asking, RR details and manual overrides already saved are kept.`,{title:'Update D.O. list',okLabel:'Update list',danger:false})))return;
+  S.xl.busy=true;$('#x-imp').disabled=true;let n=0;
+  try{for(let i=0;i<rows.length;i+=500){
+    const ch=rows.slice(i,i+500).map(({_row,_s,_err,direction,source_sheet,source_row,...r})=>r);
+    const{error}=await db.from('ksk_dashboard_values').upsert(ch,{onConflict:'do_no'});if(error)throw error;
+    n+=ch.length;$('#x-p').style.width=(n/rows.length*100)+'%'}
+   toast(`D.O. list updated: ${fI(n)} D.O.s`);S.xl.rows=[];$('#t-x').innerHTML='';$('#x-i').textContent='Upload a file to preview'}
+  catch(e){toast(`Stopped after ${fI(n)} D.O.s: ${exErr(e)}`,true)}
+  finally{S.xl.busy=false;await load();setTimeout(()=>$('#x-p').style.width='0',1200);cntX()}
+  return}
+ const dir=S.xl.dir||($('#x-t').value==='ksk_inward'?'IN':'OUT');
+ const label=dir=='IN'?'Inward':'Dispatch';
+ if(!(await PRTPL.confirm(`Delete all current ${label} rows and load the ${fI(rows.length)} rows from this sheet?`,{title:'Replace all '+label+' rows?',okLabel:'Delete and load',danger:true})))return;
+ S.xl.busy=true;$('#x-imp').disabled=true;let n=0;
+ try{
+  for(let i=0;i<rows.length;i+=500){
+   const ch=rows.slice(i,i+500).map(({_row,_s,_err,...r})=>({...r,direction:dir}));
+   const{error}=await db.rpc('ksk_upload_rows',{p_direction:dir,p:ch,p_clear:i==0});
+   if(error)throw error;
+   n+=ch.length;$('#x-p').style.width=(n/rows.length*100)+'%';
+  }
+  toast(`${label} replaced: ${fI(n)} rows loaded`);S.xl.rows=[];$('#t-x').innerHTML='';$('#x-i').textContent='Upload a file to preview';
+ }catch(e){toast(`Stopped after ${fI(n)} rows: ${exErr(e)}`,true)}
+ finally{S.xl.busy=false;await load();setTimeout(()=>$('#x-p').style.width='0',1200);cntX()}
+}
+
+/* ---- events ---- */
+const IC={dashboard:'<rect x="3" y="3" width="7" height="9" rx="2"/><rect x="14" y="3" width="7" height="5" rx="2"/><rect x="14" y="12" width="7" height="9" rx="2"/><rect x="3" y="16" width="7" height="5" rx="2"/>',entry:'<path d="M12 5v14M5 12h14"/>',log:'<path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>',excel:'<path d="M12 15V3m0 0l-4 4m4-4l4 4M4 15v4a2 2 0 002 2h12a2 2 0 002-2v-4"/>'};
+$$('#dock button').forEach(b=>{b.insertAdjacentHTML('afterbegin',`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">${IC[b.dataset.v]}</svg>`);b.onclick=()=>{S.view=b.dataset.v;$$('#dock button').forEach(x=>x.classList.toggle('active',x==b));['dashboard','entry','log','excel'].forEach(n=>$('#v-'+n).classList.toggle('hidden',n!=S.view));S.view=='log'&&renderLog();S.view=='dashboard'&&setPage(S.page)}});
+$$('.seg button').forEach(b=>b.onclick=()=>setPage(b.dataset.p));
+$$('.stab').forEach(b=>b.onclick=()=>{$$('.stab').forEach(x=>x.classList.toggle('active',x==b));['do','in','out'].forEach(n=>$('#e-'+n).classList.toggle('hidden',n!=b.dataset.e))});
+['#f-q','#f-col','#f-hide'].forEach(s=>$(s).addEventListener('input',renderAll));$('#dl').onclick=capture;$('#s-do').onchange=loadSum;
+document.addEventListener('click',e=>{const th=e.target.closest('th.so');if(!th)return;const s=S.sort[th.dataset.t];s.k==th.dataset.k?s.d*=-1:(s.k=th.dataset.k,s.d=1);renderAll()});
+$('#l-t').onchange=()=>{S.pg=0;setupLog();renderLog()};$('#l-go').onclick=()=>{S.pg=0;renderLog()};$('#l-ord').onchange=()=>{S.pg=0;renderLog()};$('#l-exp').onclick=expLog;
+$('#l-clr').onclick=()=>{$$('#l-from,#l-to,#l-do,#l-sec,#l-x input').forEach(e=>e.value='');S.pg=0;renderLog()};$('#l-pv').onclick=()=>{S.pg--;renderLog()};$('#l-nx').onclick=()=>{S.pg++;renderLog()};
+$('#t-log').addEventListener('click',async e=>{const b=e.target.closest('[data-a]');if(!b)return;const t=$('#l-t').value,id=b.dataset.id,a=b.dataset.a;
+ if(a=='open'){$('#dock [data-v=entry]').click();$$('.stab')[0].click();$('#do-pick').value=id;return fillDoForm()}
+ if(a=='del'){if(!(await PRTPL.confirm('Delete this entry permanently?',{title:'Delete entry?',okLabel:'Delete'})))return;const{error}=await db.from(SRC(t)).delete().eq('id',id);return error?toast(exErr(error),true):(toast('Deleted'),renderLog(),load())}
+ const row=$('#t-log')._r.find(r=>String(r.id)==id);if(!row)return;$('#dlg-t').textContent=`Edit · ${TB[t].l} · #${id}`;$('#dlg-b').innerHTML='';$('#dlg-b').append(mkForm(t,{edit:1,values:row,done:()=>{$('#dlg').close();renderLog();load()}}));$('#dlg').showModal()});
+$('#refresh').onclick=load;$('#x-t').onchange=()=>{S.xl.wb&&(guess(),parseSheet().catch(x=>toast(exErr(x),true)))};$('#x-s').onchange=()=>parseSheet().catch(x=>toast(exErr(x),true));
+const dp=$('#drop');dp.onclick=()=>$('#x-f').click();$('#x-f').onchange=e=>e.target.files[0]&&loadX(e.target.files[0]);['dragover','drop'].forEach(v=>dp.addEventListener(v,e=>e.preventDefault()));dp.addEventListener('drop',e=>e.dataTransfer.files[0]&&loadX(e.dataTransfer.files[0]));$('#x-imp').onclick=impX;
+
+async function init(){setupLog();buildDo();$('#f-in').append(mkForm('ksk_inward',{done:load}));$('#f-out').append(mkForm('ksk_dispatch',{done:load}));if(!db){toast('Paste your Supabase anon key at the top of the script (KEY).',true);return setSt('Not connected','err')}
+ await load();let tm;db.channel('ksk').on('postgres_changes',{event:'*',schema:'public'},()=>{clearTimeout(tm);tm=setTimeout(()=>{load();S.view=='log'&&renderLog()},1500)}).subscribe();setInterval(()=>S.view=='dashboard'&&load(),60000)}
+init();
+</script></body></html>

@@ -1,0 +1,1869 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="robots" content="noindex, nofollow" />
+<meta name="referrer" content="strict-origin-when-cross-origin" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PJPB Dashboard | AMM PJPB</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+@import url("https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=Instrument+Sans:wght@400;500;600;700&display=swap");
+:root{
+  --bg:#eeedf8; --card:#fff; --line:#e3e1f1; --ink:#14112e; --mute:#14112e; --navy:#1f1b4d; --navy2:#3a3796;
+  --teal:#12a57a; --blue:#4b5fd6; --amber:#f08a24; --violet:#7c5cf0; --rose:#e5484d; --sky:#0ea5b7; --pink:#d6489b; --gold:#ffb347;
+  --head:"Bricolage Grotesque",ui-sans-serif,system-ui,sans-serif;
+  --body:"Instrument Sans","Segoe UI",system-ui,sans-serif;
+  --ease:cubic-bezier(.2,.8,.2,1);
+  --sh:0 1px 2px rgba(31,27,77,.06),0 10px 24px -12px rgba(31,27,77,.22);
+  --sh-hi:0 2px 4px rgba(31,27,77,.06),0 22px 38px -16px rgba(31,27,77,.36);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{font-size:clamp(12px,.55vw + 8px,15px)}
+body{font-family:var(--body);color:var(--ink);min-height:100vh;line-height:1.4;overflow-x:hidden;transition:opacity .18s;
+  background:radial-gradient(900px 480px at 95% -8%,#ddd9ff 0,transparent 70%),radial-gradient(800px 460px at -5% 105%,#ffe8cc 0,transparent 70%),var(--bg);background-attachment:fixed}
+a{text-decoration:none;color:inherit}
+input,select,textarea{font-family:inherit;color-scheme:light;outline:none}
+input:focus,select:focus,textarea:focus{box-shadow:0 0 0 3px rgba(58,55,150,.35)!important}
+
+.sidebar{position:fixed;top:10px;left:50%;transform:translateX(-50%);z-index:100;display:flex;align-items:center;gap:1rem;
+  background:rgba(31,27,77,.95);backdrop-filter:blur(12px);color:#ebe9ff;border-radius:999px;padding:.35rem .5rem .35rem 1rem;
+  box-shadow:0 12px 32px -10px rgba(31,27,77,.55),0 0 0 1px rgba(255,255,255,.08);max-width:calc(100% - 1.5rem)}
+.back-btn{display:inline-flex;align-items:center;gap:.4rem;padding:.45rem .85rem;border-radius:999px;color:#fff;font-weight:600;font-size:.85rem;white-space:nowrap;background:rgba(255,255,255,.12);transition:.2s}
+.back-btn:hover{background:rgba(255,255,255,.22)}
+.party-name{font:700 1.05rem var(--head);display:flex;align-items:center;gap:.45rem;color:#fff;white-space:nowrap}
+.party-name .dot{width:8px;height:8px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 3px rgba(255,179,71,.28)}
+.sidebar-nav{display:flex;gap:.2rem;flex-wrap:wrap}
+.nav-item{display:flex;align-items:center;gap:.4rem;padding:.45rem .85rem;border-radius:999px;color:#c4c1e8;font-weight:500;font-size:.85rem;white-space:nowrap;transition:.2s;cursor:pointer;background:none;border:0;font-family:inherit}
+.nav-item:hover{background:rgba(255,255,255,.12);color:#fff}
+.nav-item.active{background:rgba(255,179,71,.24);color:#fff;box-shadow:inset 0 0 0 1px rgba(255,179,71,.45)}
+.user-chip{display:flex;align-items:center;gap:.5rem;color:#d6d3f2;font-size:.8rem;font-weight:600;padding:.3rem .6rem}
+.user-chip button{border:0;background:rgba(255,255,255,.14);color:#fff;border-radius:999px;padding:.3rem .75rem;cursor:pointer;font:inherit}
+
+.main{max-width:1600px;margin:0 auto;padding:4.8rem 1.4rem 1.4rem}
+.view{display:none}
+.view.active{display:block;animation:rise .55s var(--ease) backwards}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+
+.topbar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:.8rem;margin-bottom:1.2rem;padding:1.1rem 1.5rem;border-radius:22px;color:#fff;
+  background:radial-gradient(500px 200px at 90% 0,rgba(255,179,71,.38),transparent 70%),linear-gradient(120deg,var(--navy) 0%,var(--navy2) 60%,#7a3fa8 100%);
+  box-shadow:0 18px 36px -18px rgba(31,27,77,.65)}
+.topbar h1{font:700 clamp(1.3rem,1.4vw + .8rem,2rem) var(--head);letter-spacing:-.02em}
+.period{font-size:.85rem;font-weight:500;color:#d4cdf5;margin-top:.1rem}
+.topbar-actions{display:flex;gap:.55rem;flex-wrap:wrap;align-items:center}
+.month-pick{padding:.55rem .9rem;border-radius:12px;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.12);color:#fff;font-weight:600;cursor:pointer}
+.month-pick option{color:var(--ink)}
+.btn{display:inline-flex;align-items:center;gap:.45rem;padding:.55rem 1.1rem;font:600 .85rem var(--body);border:1px solid transparent;border-radius:12px;cursor:pointer;transition:.2s}
+.btn i{transition:transform .2s}.btn:hover i{transform:scale(1.2) rotate(8deg)}
+.btn:hover{transform:translateY(-2px)}.btn:active{transform:scale(.97)}
+.btn-secondary{background:rgba(255,255,255,.14);color:#fff;border-color:rgba(255,255,255,.3)}
+.btn-secondary:hover{background:rgba(255,255,255,.24)}
+.btn-primary{background:var(--gold);color:#3a2300;box-shadow:0 10px 18px -8px rgba(255,179,71,.75)}
+.btn:disabled{opacity:.6;cursor:wait}
+
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.2rem;margin-bottom:1.2rem;align-items:stretch}
+.card{--c:var(--blue);--t:#e9ecfc;--l:#b3bdf0;--d:#27358f;--h:#f1f3fd;--b:#dce1f8;position:relative;background:var(--card);border:1px solid var(--line);border-radius:20px;padding:1.1rem 1.15rem 1rem;box-shadow:var(--sh);overflow:hidden;transition:transform .25s var(--ease),box-shadow .25s;margin-bottom:1.2rem}
+.card::before{content:"";position:absolute;left:0;right:0;top:0;height:4px;background:linear-gradient(90deg,var(--c),var(--l))}
+.card:hover{transform:translateY(-3px);box-shadow:var(--sh-hi)}
+.card-header{display:flex;align-items:center;justify-content:space-between;gap:.6rem;margin-bottom:.7rem;flex-wrap:wrap}
+.card-header h3{font:700 1rem var(--head);letter-spacing:-.01em;display:flex;align-items:center;gap:.6rem}
+.card-header h3 i{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;font-size:.9rem;color:#fff;background:linear-gradient(135deg,var(--c),var(--d));box-shadow:0 8px 14px -6px var(--c)}
+.c-area{--c:var(--sky);--t:#e0f6f8;--l:#9ddde4;--d:#0a6470;--h:#ebf9fb;--b:#d1eff3}
+.c-short{--c:var(--pink);--t:#fbe7f3;--l:#eba9d2;--d:#7a1f55;--h:#fdf0f8;--b:#f6d8ea}
+.c-bill{--c:var(--blue);--t:#e9ecfc;--l:#b3bdf0;--d:#27358f;--h:#f1f3fd;--b:#dce1f8}
+.c-rake{--c:var(--amber);--t:#fdeedc;--l:#f8cd9d;--d:#8a4a0a;--h:#fef4e8;--b:#fbe5cc}
+.c-pen{--c:var(--rose);--t:#fdebec;--l:#f5b6b8;--d:#892b2e;--h:#fef0f1;--b:#fadedf}
+.mines-card{--c:var(--navy2);--t:#e9e8f7;--l:#a9a7d2;--d:#1f1b4d;--h:#f0effa;--b:#d9d8ea}
+.trend-card{--c:var(--amber);--t:#fdeedc;--l:#f8cd9d;--d:#8a4a0a}
+.grid-3 .card{margin-bottom:0}
+
+.metric-row{display:flex;align-items:center;justify-content:space-between;gap:.6rem;padding:.42rem .25rem;border-bottom:1px dashed var(--line);border-radius:10px;transition:background .2s}
+.metric-row:last-child{border-bottom:0}
+.metric-row:hover{background:var(--h)}
+.metric-label{flex:1;font-size:.8rem;font-weight:700;color:var(--ink);text-align:left}
+.metric-value{width:7.8rem;min-width:0;border:1px solid transparent;border-radius:11px;background:var(--t);color:var(--ink);font:700 .95rem var(--body);font-variant-numeric:tabular-nums;text-align:right;padding:.4rem .7rem;transition:.2s}
+.metric-value:hover{border-color:var(--c)}
+.metric-value.neg{color:#b3162b;background:#fdeaec}
+.metric-value.pos{color:#0c7a55}
+.pair{display:flex;gap:.35rem}
+.pair input:first-child{width:7.8rem}.pair input:last-child{width:5.6rem}
+.wide{width:9.5rem!important}
+.dual-head{display:flex;justify-content:flex-end;gap:.35rem;padding:0 .25rem .25rem;margin-bottom:.15rem}
+.dual-head span{font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--ink);text-align:center}
+.dual-head span:first-child{width:7.8rem}.dual-head span:last-child{width:5.6rem}
+.triple-head{display:flex;justify-content:flex-end;gap:.25rem;padding:0 .25rem .25rem;margin-bottom:.15rem}
+.triple-head span{font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--ink);text-align:center;width:5.2rem}
+.pair3{display:flex;gap:.25rem}
+.pair3 input{width:5.2rem!important}
+
+.sub-title{margin:.7rem 0 .35rem;padding:.35rem .7rem;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--c);background:var(--t);border-radius:999px;display:inline-block}
+.total-row{margin-top:.4rem;padding:.55rem .7rem;border:0;border-radius:14px;background:linear-gradient(120deg,var(--navy),var(--navy2));box-shadow:0 10px 18px -10px rgba(31,27,77,.6)}
+.total-row .metric-label{color:#fff;font-weight:700}
+.total-row .metric-value{background:rgba(255,206,140,.16);color:#ffd49a;border:0}
+.total-row .metric-value.neg{color:#ffb3bd}
+
+.area-table{width:100%;border-collapse:separate;border-spacing:5px}
+.area-table th{font:700 .7rem var(--body);text-transform:uppercase;letter-spacing:.5px;color:#fff;background:var(--d);border-radius:10px;padding:.5rem .2rem;text-align:center}
+.area-table th:first-child{background:none}
+.area-table .row-label{font-size:.76rem;font-weight:700;color:var(--ink);text-align:left;padding:0 .3rem}
+.area-table td{padding:0}
+.area-table input{width:100%;border:1px solid transparent;border-radius:12px;background:var(--t);color:var(--ink);font:700 1.15rem var(--head);font-variant-numeric:tabular-nums;text-align:center;padding:.65rem .2rem;transition:.2s}
+.area-table.five input{font-size:.92rem;padding:.6rem .1rem}
+.area-table input:hover{border-color:var(--c)}
+.area-table input.neg{color:#b3162b;background:#fdeaec}
+.area-table td.tot input{background:#fff;border:1px solid var(--line)}
+.c-rake .area-table td:nth-child(3) input{background:#fff;border:1px solid var(--line)}
+.avg-grid{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-top:.7rem}
+.highlight-box{background:var(--t);border-radius:14px;padding:.55rem .6rem;text-align:center;border:1px solid var(--b);transition:transform .2s,box-shadow .2s}
+.highlight-box:hover{transform:translateY(-2px);box-shadow:0 10px 18px -12px var(--c)}
+.highlight-box .label{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--ink);margin-bottom:.2rem}
+.highlight-box .metric-value{width:100%;background:transparent;border:0;text-align:center;font:700 1.25rem var(--head);color:var(--ink);padding:.1rem}
+.hb-steel{background:#e9ecfc}.hb-lav{background:#efeafe}
+
+.mines-wrap{overflow-x:auto;border-radius:14px;border:1px solid var(--line)}
+.mines-table{width:100%;border-collapse:separate;border-spacing:0;min-width:640px}
+.mines-table th{background:linear-gradient(120deg,var(--navy),var(--navy2));color:#fff;font-size:.72rem;letter-spacing:.5px;text-transform:uppercase;font-weight:700;padding:.6rem .5rem;white-space:nowrap;position:sticky;top:0;z-index:2}
+.mines-table td{border-bottom:1px solid var(--line);padding:0;text-align:center}
+.mines-table tbody tr:nth-child(even) td{background:#f6f5fd}
+.mines-table tbody tr:last-child td{border-bottom:0}
+.mines-table .row-label{text-align:left;font-size:.78rem;font-weight:700;color:var(--ink);padding:.5rem .8rem;min-width:11.5rem;white-space:nowrap;position:sticky;left:0;z-index:1;background:#f6f5fd;border-right:1px solid var(--line)}
+.mines-table input{width:100%;min-width:5.2rem;border:0;background:transparent;color:var(--ink);font:700 .85rem var(--body);font-variant-numeric:tabular-nums;text-align:center;padding:.55rem .3rem}
+.mines-table input.neg{color:#b3162b}
+.mines-table input.pos{color:#0c7a55}
+.mines-table td.txt{padding:.5rem .6rem;font-size:.82rem;font-weight:600;white-space:nowrap}
+.mines-table td.txt.left{text-align:left}
+.src-wrap{max-height:430px;overflow:auto;border-radius:14px;border:1px solid var(--line);margin-top:.4rem}
+
+.trend-wrap{overflow-x:auto;border-radius:14px;border:1px solid #8a5a12}
+.trend-table{width:100%;min-width:980px;border-collapse:collapse;font-variant-numeric:tabular-nums}
+.trend-table th{background:#ffcf8a;color:var(--ink);font-weight:700;font-size:.78rem;padding:.6rem .5rem;text-align:center;border:1px solid #8a5a12}
+.trend-table td{background:#fff1d6;color:var(--ink);font-weight:700;font-size:.85rem;padding:.5rem .5rem;text-align:center;border:1px solid #8a5a12}
+.trend-table td.qtr{background:#ffe2ad}
+.trend-table td.low{background:#ffc7ce;color:#b3162b}
+
+.panel{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:1.2rem 1.3rem;box-shadow:var(--sh);margin-bottom:1.2rem}
+.panel h2{font:700 1.15rem var(--head);margin-bottom:.8rem;display:flex;align-items:center;gap:.6rem}
+.panel h2 i{color:var(--amber)}
+.muted{color:var(--mute);font-size:.85rem;font-weight:500}
+.form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:1rem}
+.form-group{display:flex;flex-direction:column;gap:.35rem;min-width:0}
+.form-group label{font-size:.8rem;font-weight:700;color:var(--ink)}
+.form-group input,.form-group select,.form-group textarea,.field{padding:.6rem .8rem;font-size:.92rem;border:1px solid var(--line);border-radius:11px;background:#f5f4fd;color:var(--ink);width:100%}
+.form-group input[readonly]{background:#fdf3e4}
+.section{margin-bottom:1.3rem}
+.section-title{font:700 .95rem var(--head);color:var(--navy2);margin-bottom:.6rem;padding-bottom:.35rem;border-bottom:2px solid #ffe2ad;display:flex;align-items:center;gap:.5rem}
+.section-title i{color:var(--amber)}
+.req{color:var(--rose);margin-left:.2rem}
+.tag{margin-left:.4rem;font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.4px;padding:.1rem .45rem;border-radius:999px;background:#ffe9c7;color:#8a4a0a}
+.unit-wrap{position:relative}
+.unit-wrap input{padding-right:3rem}
+.unit-wrap .unit{position:absolute;right:.7rem;top:50%;transform:translateY(-50%);font-size:.72rem;font-weight:700;color:#6b6890}
+.form-actions{margin-top:1rem;display:flex;gap:.6rem;flex-wrap:wrap;align-items:center}
+.btn-go{background:linear-gradient(120deg,var(--navy),var(--navy2));color:#fff;border:0;padding:.6rem 1.1rem;border-radius:12px;font:700 .85rem var(--body);cursor:pointer;display:inline-flex;align-items:center;gap:.45rem;transition:.2s}
+.btn-go:hover{transform:translateY(-2px);box-shadow:0 10px 18px -10px rgba(31,27,77,.6)}
+.btn-go:disabled{opacity:.55;cursor:not-allowed;transform:none}
+.btn-soft{background:#fcfbff;color:var(--navy);border:1px solid #d6d3ee;padding:.55rem .95rem;border-radius:12px;font:600 .82rem var(--body);cursor:pointer;display:inline-flex;align-items:center;gap:.4rem}
+.btn-soft:hover{border-color:var(--gold)}
+.btn-soft.btn-danger{background:#fbe6e9;color:#b3162b;border-color:#f2c4cb}
+.btn-sm{padding:.3rem .55rem;font-size:.75rem}
+.drop{border:2px dashed #aba8d6;border-radius:16px;padding:1.6rem;text-align:center;background:#f7f6fe;cursor:pointer;transition:.2s}
+.drop:hover,.drop.over{border-color:var(--amber);background:#fff6e8}
+.drop i{font-size:1.8rem;color:var(--amber)}
+.drop p{margin-top:.4rem;font-weight:600}
+.status{font-size:.85rem;font-weight:600;margin-top:.7rem;min-height:1.2em}
+.status.err{color:#b3162b}
+.status.ok{color:#0c7a55}
+.tbl-wrap{overflow:auto;max-height:520px;border:1px solid var(--line);border-radius:14px}
+.tbl{width:100%;border-collapse:collapse;font-size:.82rem}
+.tbl th{position:sticky;top:0;z-index:1;background:linear-gradient(120deg,var(--navy),var(--navy2));color:#fff;padding:.5rem .6rem;font-size:.7rem;text-transform:uppercase;letter-spacing:.4px;white-space:nowrap;text-align:center}
+.tbl td{padding:.4rem .5rem;border-bottom:1px solid var(--line);white-space:nowrap;text-align:center;font-weight:600;color:var(--ink)}
+.tbl tbody tr:nth-child(even) td{background:#f6f5fd}
+.tbl tfoot td{background:#fff1d6;font-weight:700}
+.tbl td input{width:100%;min-width:7rem;border:1px solid var(--line);border-radius:8px;padding:.3rem .4rem;font:600 .8rem var(--body);background:#fff;text-align:center}
+.tbl td input[readonly]{background:#f3f2fa;color:#5a5780}
+.tbl td.act{white-space:nowrap}
+.tbl .empty{padding:1.5rem;color:var(--mute)}
+.mapping{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.6rem}
+.chip{font-size:.72rem;font-weight:700;padding:.25rem .6rem;border-radius:999px;background:#e9ecfc;color:#27358f}
+.chip.skip{background:#fdeaec;color:#b3162b}
+.chip.auto{background:#ffe9c7;color:#8a4a0a}
+.toolbar{display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;margin-bottom:.8rem}
+.toolbar input.search{flex:1;min-width:200px;border:1px solid var(--line);border-radius:11px;padding:.5rem .8rem;background:#f5f4fd}
+.hidden{display:none!important}
+.formula-list{margin-top:.5rem;padding-left:1.1rem;font-size:.88rem;font-weight:600;line-height:1.7;color:var(--ink)}
+.formula-list code{background:#f1effc;border-radius:6px;padding:0 .3rem;font-size:.82rem}
+
+.lock-row{display:flex;align-items:center;justify-content:center;gap:1.5rem;flex-wrap:wrap;min-height:70vh;padding:1rem}
+.lock-back{background:linear-gradient(120deg,var(--navy),var(--navy2));color:#fff;border:0;padding:.75rem 1.2rem;border-radius:14px;font:700 .9rem var(--body);cursor:pointer;display:inline-flex;align-items:center;gap:.5rem;box-shadow:0 12px 22px -12px rgba(31,27,77,.7);transition:.2s}
+.lock-back:hover{transform:translateY(-2px)}
+.lock-card{width:min(380px,92vw);text-align:center;margin:0}
+.lock-card input{margin:.8rem 0;width:100%;border:1px solid var(--line);border-radius:11px;padding:.6rem .8rem;font-size:1rem;text-align:center;letter-spacing:.3em;background:#f5f4fd}
+.lock-card .btn-go{justify-content:center;width:100%}
+
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;margin-bottom:1.2rem}
+.stat-card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:1rem 1.2rem;box-shadow:var(--sh);border-top:4px solid var(--line);text-align:center}
+.stat-card .label{font-size:.8rem;font-weight:700;color:var(--ink)}
+.stat-card .value{font:700 1.9rem var(--head);line-height:1.2;margin-top:.2rem}
+.alert-item{display:flex;gap:1rem;align-items:center;padding:.9rem 1rem;margin-bottom:.7rem;border-radius:14px;background:#e9ecfc;border:1px solid var(--line);border-left:5px solid #4b5fd6}
+.alert-item.critical{border-left-color:#d1344a;background:#fbebee}
+.alert-item.warning{border-left-color:#c27a0a;background:#fcf3e0}
+.alert-item.success{border-left-color:#16875f;background:#e1f3ec}
+.alert-item h4{font-size:.95rem}
+.alert-item p{font-size:.85rem;color:#4a4a72}
+.alert-item .alert-time{font-size:.75rem;color:#77759a}
+.rep-table{width:100%;border-collapse:collapse;font-size:.88rem}
+.rep-table th,.rep-table td{padding:.6rem .7rem;border-bottom:1px solid var(--line);text-align:right;font-weight:600;font-variant-numeric:tabular-nums}
+.rep-table th:first-child,.rep-table td:first-child{text-align:left}
+.rep-table th{background:#efeefb;font-size:.72rem;text-transform:uppercase}
+.rep-table tfoot td{background:#fff1d6;font-weight:700}
+.rep-scroll{overflow-x:auto}
+
+.toast{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--navy);color:#fff;border-left:4px solid var(--gold);padding:.8rem 1.3rem;border-radius:12px;box-shadow:0 18px 34px -12px rgba(31,27,77,.5);z-index:1000;transform:translateY(100px);opacity:0;transition:.25s;max-width:min(90vw,520px)}
+.toast.show{transform:none;opacity:1}.toast.error{border-left-color:#ff7a8c}
+
+@media (max-width:1150px){.grid-3{grid-template-columns:1fr 1fr}.grid-3>.card:nth-child(3){grid-column:1/-1}}
+@media (max-width:800px){
+  .grid-3{grid-template-columns:1fr}.grid-3>.card:nth-child(3){grid-column:auto}
+  .sidebar{left:.5rem;right:.5rem;transform:none;flex-wrap:wrap;justify-content:center;border-radius:18px;max-width:none}
+  .main{padding:7rem .8rem 1rem}.topbar{justify-content:center;text-align:center}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+/* GUJARAT-STYLE DASHBOARD LAYOUT */
+.back-row{display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;margin-bottom:.8rem}
+.back-row .back-btn{background:linear-gradient(120deg,var(--navy),var(--navy2));padding:.6rem 1.1rem;border-radius:12px;font-weight:700;box-shadow:0 10px 18px -10px rgba(31,27,77,.6)}
+.report-stamp{font-size:.85rem;font-weight:600;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:999px;padding:.5rem 1.2rem;box-shadow:var(--sh);display:inline-flex;align-items:center;gap:.5rem;margin-left:auto}
+.report-stamp::before{content:"";width:8px;height:8px;border-radius:50%;background:#16a870;box-shadow:0 0 0 3px rgba(22,168,112,.25)}
+.dash{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.2rem;align-items:start;margin-bottom:1.2rem}
+.dash-col{display:flex;flex-direction:column;gap:1.2rem;min-width:0}
+.dash-col .card{margin-bottom:0}
+.dash .area-table.five{border-spacing:8px}
+.dash .area-table.five th{font-size:.68rem;padding:.55rem .35rem}
+.dash .area-table.five input{font-size:.82rem;padding:.65rem .2rem}
+.dash .area-table.five .row-label{padding:.2rem .5rem;font-size:.8rem}
+.dash .c-area{padding:1.25rem 1.3rem 1.15rem}
+.dash .c-area .card-header{margin-bottom:.9rem}
+@media (max-width:1150px){.dash{grid-template-columns:1fr 1fr}}
+@media (max-width:800px){.dash{grid-template-columns:1fr}.report-stamp{margin-left:0}}
+.tbl thead tr:first-child th{height:34px}
+.tbl .filter-row th{top:34px;background:#ece9fb;padding:.25rem}
+.tbl .filter-row input{width:100%;min-width:6rem;border:1px solid var(--line);border-radius:8px;padding:.25rem .4rem;font:600 .75rem var(--body)}
+</style>
+<meta name="pr-access" content="amm:PJPB" />
+<meta name="description" content="PJPB Dashboard | AMM PJPB – Prithvi Realcon logistics and performance portal." />
+<meta name="theme-color" content="#1d4ed8" />
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+<link rel="apple-touch-icon" href="assets/icon-192.png" />
+<link rel="manifest" href="manifest.webmanifest" />
+<link rel="stylesheet" href="assets/prtpl.css" />
+<script src="assets/prtpl.js"></script>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="party-name"><span class="dot"></span> PJPB</div>
+  <nav class="sidebar-nav">
+    <button class="nav-item active" data-view="dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</button>
+    <button class="nav-item" data-view="reports"><i class="fas fa-file-alt"></i> Reports</button>
+    <button class="nav-item" data-view="alerts"><i class="fas fa-bell"></i> Alerts</button>
+    <button class="nav-item" data-view="upload"><i class="fas fa-file-excel"></i> Upload Excel</button>
+    <button class="nav-item" data-view="log"><i class="fas fa-list"></i> Records Log</button>
+    <button class="nav-item" data-view="entry"><i class="fas fa-keyboard"></i> Data Entry</button>
+    <button class="nav-item" data-view="formulas"><i class="fas fa-calculator"></i> Formulas</button>
+  </nav>
+  <div class="user-chip"><span id="userLabel">Locked</span><button id="lockBtn"><i class="fas fa-lock"></i></button></div>
+</aside>
+
+<main class="main">
+
+<!-- ============ DASHBOARD VIEW ============ -->
+<section class="view active" id="view-dashboard">
+  <div class="back-row"><a class="back-btn" href="amm_home.html"><i class="fas fa-arrow-left"></i> Back</a><div class="report-stamp">Performance Report updated upto <strong id="reportUpdatedUpto">-</strong></div></div>
+  <div class="topbar">
+    <div><h1>Performance Meter</h1><div class="period" id="periodLabel">AMM PJPB</div></div>
+    <div class="topbar-actions">
+      <select id="periodPick" class="month-pick" aria-label="Quarter"></select>
+      <button class="btn btn-secondary" id="reloadBtn"><i class="fas fa-rotate"></i> Reload from Database</button>
+      <button class="btn btn-primary" id="pdfBtn"><i class="fas fa-file-image"></i> Download PNG</button>
+    </div>
+  </div>
+
+  <div class="dash">
+    <div class="dash-col">
+      <div class="card c-bill">
+        <div class="card-header"><h3><i class="fas fa-list-check"></i> Particulars</h3></div>
+        <div class="dual-head"><span>Amount</span><span>Per MT</span></div>
+        <div class="metric-row"><span class="metric-label">Performance on Quantity RECO</span><div class="pair"><input class="metric-value" id="par_qtyReco" readonly><input class="metric-value" id="par_qtyRecoMt" readonly></div></div>
+        <div class="metric-row"><span class="metric-label">Performance on GCV RECO</span><div class="pair"><input class="metric-value" id="par_gcvReco" readonly><input class="metric-value" id="par_gcvRecoMt" readonly></div></div>
+        <div class="metric-row"><span class="metric-label">Performance on Service Charge (SECL)</span><div class="pair"><input class="metric-value" id="par_scSecl" readonly><input class="metric-value" id="par_scSeclMt" readonly></div></div>
+        <div class="metric-row"><span class="metric-label">Performance on Service Charge (MCL)</span><div class="pair"><input class="metric-value" id="par_scMcl" readonly><input class="metric-value" id="par_scMclMt" readonly></div></div>
+        <div class="metric-row"><span class="metric-label">Performance on Service Charge (CCL)</span><div class="pair"><input class="metric-value" id="par_scCcl" readonly><input class="metric-value" id="par_scCclMt" readonly></div></div>
+        <div class="metric-row"><span class="metric-label">Performance on Service Charge (NCL)</span><div class="pair"><input class="metric-value" id="par_scNcl" readonly><input class="metric-value" id="par_scNclMt" readonly></div></div>
+        <div class="metric-row"><span class="metric-label">Total Railway Penalty</span><div class="pair"><input class="metric-value" id="par_pen" readonly><input class="metric-value" id="par_penMt" readonly></div></div>
+        <div class="metric-row total-row"><span class="metric-label">TOTAL BILLING</span><div class="pair"><input class="metric-value" id="par_totalBill" readonly><input class="metric-value" id="par_totalBillMt" readonly></div></div>
+        <div class="metric-row"><span class="metric-label">Expected Billing of the Month</span><input class="metric-value wide" id="par_expBill" readonly></div>
+      </div>
+      <div class="card c-rake">
+        <div class="card-header"><h3><i class="fas fa-train"></i> Rake Performance</h3></div>
+        <table class="area-table">
+          <thead><tr><th></th><th>Achieve</th><th>Target</th></tr></thead>
+          <tbody>
+            <tr><td class="row-label">Target Achieved</td><td><input id="pd_tgtAch" readonly></td><td><input id="pd_tgtTgt" readonly></td></tr>
+            <tr><td class="row-label">Asking</td><td><input id="pd_askAch" readonly></td><td><input id="pd_askTgt" readonly></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="dash-col">
+      <div class="card c-area">
+        <div class="card-header"><h3><i class="fas fa-map-marker-alt"></i> Plants / Target (Quarter)</h3></div>
+        <div id="areaTargetsBox"></div>
+      </div>
+      <div class="card c-rake" id="wtSummaryCard">
+        <div class="card-header"><h3><i class="fas fa-weight-hanging"></i> Weight Summary</h3></div>
+        <div class="avg-grid">
+          <div class="highlight-box"><div class="label">Avg. Plant Receive</div><input class="metric-value" id="t_avgNet" readonly></div>
+          <div class="highlight-box"><div class="label">Avg. Chargeable Wt.</div><input class="metric-value" id="t_avgChg" readonly></div>
+          <div class="highlight-box"><div class="label">Avg. RR Wt.</div><input class="metric-value" id="t_avgRr" readonly></div>
+          <div class="highlight-box"><div class="label">Avg. GCV</div><input class="metric-value" id="t_avgGcv" readonly></div>
+          <div class="highlight-box hb-steel"><div class="label">Total RR Weight</div><input class="metric-value" id="t_totalRr" readonly></div>
+          <div class="highlight-box hb-lav"><div class="label">Total Plant Receive</div><input class="metric-value" id="t_plantRecv" readonly></div>
+        </div>
+      </div>
+    </div>
+    <div class="dash-col">
+      <div class="card c-short">
+        <div class="card-header"><h3><i class="fas fa-weight-hanging"></i> Weight Variance (RR vs Net)</h3></div>
+        <div class="metric-row"><span class="metric-label">Avg Short / Excess</span><input class="metric-value" id="wv_perRake" readonly></div>
+        <div class="metric-row"><span class="metric-label">Normalised Qty</span><input class="metric-value" id="wv_pct" readonly></div>
+        <div class="sub-title">Area wise GCV</div>
+        <div class="triple-head"><span>Loading GCV</span><span>Unloading GCV</span><span>GCV Diff</span></div>
+        <div id="areaWtBox"></div>
+      </div>
+      <div class="card c-pen">
+        <div class="card-header"><h3><i class="fas fa-exclamation-triangle"></i> Railway Freight Penalties</h3></div>
+        <div class="dual-head"><span>Amount</span><span>Per MT</span></div>
+        <div class="metric-row"><span class="metric-label">Underload Charge</span><div class="pair"><input class="metric-value" id="pn_ulChg" readonly><input class="metric-value" id="pn_ulChgMt" readonly></div></div>
+        <div class="metric-row"><span class="metric-label">Overload Charge</span><div class="pair"><input class="metric-value" id="pn_olChg" readonly><input class="metric-value" id="pn_olChgMt" readonly></div></div>
+        <div class="metric-row"><span class="metric-label">Punitive Sum</span><div class="pair"><input class="metric-value" id="pn_pun" readonly><input class="metric-value" id="pn_punMt" readonly></div></div>
+        <div class="metric-row"><span class="metric-label">EHBC / FAUC / TC</span><div class="pair"><input class="metric-value" id="pn_ehbc" readonly><input class="metric-value" id="pn_ehbcMt" readonly></div></div>
+        <div class="metric-row"><span class="metric-label">ENHC Charges</span><div class="pair"><input class="metric-value" id="pn_enhc" readonly><input class="metric-value" id="pn_enhcMt" readonly></div></div>
+        <div class="metric-row"><span class="metric-label">Dead Freight</span><div class="pair"><input class="metric-value" id="pn_dead" readonly><input class="metric-value" id="pn_deadMt" readonly></div></div>
+        <div class="metric-row total-row"><span class="metric-label">TOTAL PENALTY</span><div class="pair"><input class="metric-value" id="pn_total" readonly><input class="metric-value" id="pn_totalMt" readonly></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card mines-card" id="capArea">
+    <div class="card-header"><h3><i class="fas fa-industry"></i> Area Wise Performance</h3></div>
+    <div class="mines-wrap"><table class="mines-table" id="areaPerfTbl"></table></div>
+  </div>
+
+  <div class="card trend-card" id="capTrend">
+    <div class="card-header"><h3><i class="fas fa-calendar-alt"></i> Quarterly Performance</h3></div>
+    <div class="trend-wrap">
+      <table class="trend-table">
+        <thead><tr><th>Quarter</th><th>Rakes</th><th>RR Qty (MT)</th><th>Per Day Qty.</th><th>Freight / MT</th><th>Quarter Target (MT)</th><th>% of Target</th></tr></thead>
+        <tbody id="trendBody"></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ============ REPORTS VIEW ============ -->
+<section class="view" id="view-reports">
+  <div class="topbar">
+    <div><h1>Reports</h1><div class="period" id="repPeriod">Quarter and area summary</div></div>
+    <div class="topbar-actions">
+      <select id="periodPick2" class="month-pick" aria-label="Quarter"></select>
+      <button class="btn btn-primary" id="repXlsx"><i class="fas fa-file-excel"></i> Download Excel</button>
+    </div>
+  </div>
+  <div class="panel"><h2><i class="fas fa-calendar-day"></i> Quarter wise summary</h2><div class="rep-scroll"><table class="rep-table" id="repMonth"></table></div></div>
+  <div class="panel"><h2><i class="fas fa-map-marked-alt"></i> Area wise summary</h2><div class="rep-scroll"><table class="rep-table" id="repArea"></table></div></div>
+  <div class="status" id="repStatus"></div>
+</section>
+
+<!-- ============ ALERTS VIEW ============ -->
+<section class="view" id="view-alerts">
+  <div class="topbar">
+    <div><h1>Alerts</h1><div class="period" id="alPeriod">Data checks on the selected month</div></div>
+    <div class="topbar-actions"><button class="btn btn-secondary" id="alReload"><i class="fas fa-rotate"></i> Re-check</button></div>
+  </div>
+  <div class="stats-grid">
+    <div class="stat-card" style="border-top-color:#d1344a"><div class="label">Critical</div><div class="value" style="color:#d1344a" id="alCrit">0</div></div>
+    <div class="stat-card" style="border-top-color:#c27a0a"><div class="label">Warning</div><div class="value" style="color:#c27a0a" id="alWarn">0</div></div>
+    <div class="stat-card" style="border-top-color:#4b5fd6"><div class="label">Info</div><div class="value" style="color:#4b5fd6" id="alInfo">0</div></div>
+    <div class="stat-card" style="border-top-color:#16875f"><div class="label">Rakes checked</div><div class="value" style="color:#16875f" id="alCount">0</div></div>
+  </div>
+  <div class="panel"><h2><i class="fas fa-bell"></i> Active Alerts</h2><div id="alertList"></div></div>
+</section>
+
+<!-- ============ PASSWORD PAGE ============ -->
+<section class="view" id="view-lock">
+  <div class="lock-row">
+    <button class="lock-back" id="lockBack"><i class="fas fa-arrow-left"></i> Back to Dashboard</button>
+    <div class="panel lock-card">
+      <h2 style="justify-content:center"><i class="fas fa-lock"></i> <span id="lockTitle">Enter password</span></h2>
+      <p class="muted">Enter the password to continue.</p>
+      <input type="password" id="pwdInput" placeholder="••••" autocomplete="off">
+      <button class="btn-go" id="unlockBtn"><i class="fas fa-unlock"></i> Unlock</button>
+      <div class="status err" id="pwdErr"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ UPLOAD EXCEL VIEW ============ -->
+<section class="view" id="view-upload">
+  <div class="topbar"><div><h1>Upload Excel</h1><div class="period">Import rake records into the database (use PJPB_Excel_Upload.xlsx or a monthly MIS sheet)</div></div></div>
+  <div class="panel">
+    <h2><i class="fas fa-file-excel"></i> Choose workbook</h2>
+    <div class="drop" id="drop"><i class="fas fa-cloud-arrow-up"></i><p>Drop an .xlsx / .xls / .csv file here or click to browse</p><input type="file" id="fileInput" accept=".xlsx,.xls,.csv" hidden></div>
+    <div class="form-group" style="margin-top:.8rem;max-width:320px">
+      <label for="sheetPick">Sheet</label>
+      <select id="sheetPick" class="field"></select>
+    </div>
+    <div class="status" id="uploadStatus"></div>
+    <div class="mapping" id="mapping"></div>
+  </div>
+  <div class="panel hidden" id="previewPanel">
+    <h2><i class="fas fa-eye"></i> Preview (<span id="previewCount">0</span> rows)</h2>
+    <div class="tbl-wrap"><table class="tbl" id="previewTbl"></table></div>
+    <div class="form-actions">
+      <button class="btn-go" id="importBtn"><i class="fas fa-database"></i> Save to database</button>
+      <button class="btn-soft" id="cancelImport">Cancel</button>
+      <span class="muted" id="importNote"></span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ RECORDS LOG VIEW ============ -->
+<section class="view" id="view-log">
+  <div class="topbar"><div><h1>Records Log</h1><div class="period">Edit or delete saved rake records</div></div></div>
+  <div class="panel">
+    <div class="toolbar">
+      <select id="logMonth" class="field" style="max-width:190px"></select>
+      <input class="search" id="logSearch" placeholder="Search by RR no, source, area, FNOT, date (yyyy-mm-dd)...">
+      <button class="btn-soft" id="logReload"><i class="fas fa-rotate"></i> Reload</button>
+      <button class="btn-soft" id="logClear"><i class="fas fa-filter-circle-xmark"></i> Clear filters</button>
+      <span class="muted" id="logCount"></span>
+    </div>
+    <div class="tbl-wrap"><table class="tbl" id="logTbl"></table></div>
+    <div class="status" id="logStatus"></div>
+  </div>
+</section>
+
+<!-- ============ DATA ENTRY VIEW ============ -->
+<section class="view" id="view-entry">
+  <div class="topbar"><div><h1>Data Entry</h1><div class="period">Record coal rake loading, railway receipt, charges, freight &amp; sample data</div></div></div>
+  <div class="panel">
+    <h2><i class="fas fa-plus-circle"></i> Rake Record — New / Update</h2>
+    <div class="toolbar" style="margin-bottom:1rem">
+      <input type="number" id="searchSr" class="field" style="max-width:160px" placeholder="Sr No" min="1" step="1">
+      <select id="searchMonth" class="field" style="max-width:200px"></select>
+      <button type="button" class="btn-go" id="searchSrBtn"><i class="fas fa-search"></i> Search by Sr No</button>
+      <span class="muted" id="searchSrStatus"></span>
+    </div>
+    <form id="entryForm" novalidate>
+      <input type="hidden" id="editRecordId" value="">
+      <div id="formSections"></div>
+      <datalist id="sourceList"></datalist>
+      <datalist id="boxList"><option value="N-BOX"><option value="NS BOX"><option value="MIX BOX"><option value="NHL"><option value="BOSM"></datalist>
+      <div class="form-actions">
+        <button type="submit" class="btn-go" id="entrySubmitBtn"><i class="fas fa-save"></i> Save Record</button>
+        <button type="button" class="btn-soft" id="clearForm">Clear / New</button>
+      </div>
+    </form>
+  </div>
+  <div class="panel">
+    <h2><i class="fas fa-bullseye"></i> Target Rake</h2>
+    <div class="toolbar">
+      <select id="rakePeriod" class="field" style="max-width:230px"></select>
+      <input type="date" id="rakeReportDate" class="field" style="max-width:200px" aria-label="Report making date">
+      <button class="btn-soft" id="carryFwd"><i class="fas fa-forward"></i> Carry Forward</button>
+    </div>
+    <div class="tbl-wrap" style="max-height:none">
+      <table class="tbl">
+        <thead><tr><th>SL. No.</th><th>Area</th><th>Quarter Target</th><th>Loaded Till</th><th>Balance Rake</th><th>Asking Per Day</th><th>Asking (%)</th></tr></thead>
+        <tbody id="rakeBody"></tbody>
+        <tfoot><tr><td colspan="2">Total</td><td id="tTarget">0</td><td id="tLoaded">0</td><td id="tBalance">0</td><td id="tAskingDay">0</td><td id="tAskingPct">0</td></tr></tfoot>
+      </table>
+    </div>
+    <div class="form-grid" style="margin-top:1rem">
+      <div class="form-group"><label for="fcTarget">Freight Cost Target (&#8377; / MT)</label><input type="number" id="fcTarget" min="0" step="0.01" placeholder="e.g. 1500"></div>
+      <div class="form-group"><label for="cfRake">Carry Forward Rake</label><input type="number" id="cfRake" min="0" step="1" value="233"><span class="muted">Used for Performance on Quantity RECO (rakes placed &times; 100 &divide; this value)</span></div>
+    </div>
+    <div class="section-title" style="margin-top:1.2rem"><i class="fas fa-rupee-sign"></i> Service Charge (&#8377; / MT) — permanent until changed</div>
+    <div class="form-grid">
+      <div class="form-group"><label for="scSecl">SECL</label><input type="number" id="scSecl" min="0" step="0.01" placeholder="0"></div>
+      <div class="form-group"><label for="scMcl">MCL (IB + CKP)</label><input type="number" id="scMcl" min="0" step="0.01" placeholder="0"></div>
+      <div class="form-group"><label for="scCcl">CCL</label><input type="number" id="scCcl" min="0" step="0.01" placeholder="0"></div>
+      <div class="form-group"><label for="scNcl">NCL</label><input type="number" id="scNcl" min="0" step="0.01" placeholder="0"></div>
+    </div>
+    <p class="muted" style="margin-top:.4rem">Performance on Service Charge = RR Weight of that area × rate above. Saved permanently until you change it.</p>
+  </div>
+</section>
+
+<!-- ============ FORMULAS VIEW ============ -->
+<section class="view" id="view-formulas">
+  <div class="topbar">
+    <div><h1>Formulas</h1><div class="period">Change the calculation rules here. The dashboard uses the new values as soon as you save.</div></div>
+    <div class="topbar-actions"><button class="btn btn-secondary" id="saveFormulas"><i class="fas fa-save"></i> Save Formulas</button></div>
+  </div>
+  <div class="panel">
+    <h2><i class="fas fa-calculator"></i> Editable Rules</h2>
+    <div class="form-grid">
+      <div class="form-group"><label for="fDayQty">Per Day Quantity target (MT per day)</label><input type="number" step="1" id="fDayQty"><span class="muted">Quarter Target Qty = this value &times; days in the quarter</span></div>
+      <div class="form-group"><label for="fPctLow">Highlight monthly % below</label><input type="number" step="0.1" id="fPctLow"><span class="muted">In Monthly Performance, a month below this % is shown in red</span></div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/html-to-image@1.11.13/dist/html-to-image.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script>
+/* ==================== CONFIG ==================== */
+const SUPABASE_URL = 'https://pycmkjrmdieaqsbgrher.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB5Y21ranJtZGllYXFzYmdyaGVyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEwMjMxNzAsImV4cCI6MjEwNjU5OTE3MH0.9IE2c2FZ4BPv6Rvhfa_VniQ7LJvQ_c4EGDXFihYR4Lc';
+const APP_PASSWORD = '1234';
+
+const { createClient } = supabase;
+const db = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+const S=(sec,type,items)=>items.map(s=>{const [db,label,flags='',al='']=s.split('|');return{db,label,type,section:sec,flags,note:'',aliases:al?al.split(';'):[]}});
+const COLS=[
+ ...S('Basic Details','int',['sr_no|Sr No|A']),
+ ...S('Basic Details','date',['loading_date|Loading Date|R|Date']),
+ ...S('Basic Details','text',['area|AREA|RS','source|Source|R','unit|UNIT']),
+ ...S('Loading','num',['loading_gcv|LOADING GCV']),
+ ...S('Loading','text',['loading_grade|Loading Grade']),
+ ...S('Loading','time',['time_pt|P/T','time_ct|C/T','time_do|D/O','loading_minutes|Loading Duration|C']),
+ ...S('Wagon Details','int',['supply_wagons|Supply Wagons','load_wagons|Load Wagons','sick_wagons|Sick Wagons|C']),
+ ...S('Wagon Details','text',['box_type|Box Type','dstn|DSTN']),
+ ...S('Weights','num',['gross_wt|Gross Wt','tare_wt|Tare Wt','net_wt|Net Wt','received_wt|Received Wt','diff_wt|Diff|C','avg_loading|Avg Loading|C','chargeable_wt|Chargable Wt.||Chargeable Wt.','rr_weight|RR Weight']),
+ ...S('Quality','text',['unloading_grade|UNLOADING GRADE']),
+ ...S('Quality','num',['gcv_arb|GCV ARB','grade_slippage|GRADE SLIPPAGE']),
+ ...S('Railway Receipt','text',['rr_number|RR Number']),
+ ...S('Railway Receipt','date',['rr_date|RR Date']),
+ ...S('Underload / Overload','num',['fixed_5pct_qty|5% FIXED OF CHARGEABLE QTY|C','under_load_qty|Under Load Quantity|C','underload_qty_paid_ci|UNDERLOAD QTY PAID COAL INDIA','paid_by_secl|PAID BY SECL','underload_qty_on_us|UNDERLOAD QTY ON US','underload_charges|UNDERLOAD CHARGES','underload_qty|UNDERLOAD Quantity','push_back_charge|Push Back Charge']),
+ ...S('Punitive Charges','num',['pola1|POLA 1','pola2|POLA 2','pola|POLA','ladc|LADC','dcla|DCLA','pcla|PCLA','pol_group|POL1/POL2/POLA/LADC/PCLA/DCLA|C|pun sum;Punitative Sum']),
+ ...S('Other Railway Charges','num',['sd|SD','sdcc|SDCC','st|ST','tc|TC','fauc|FAUC','ehbc_group|EHBC/FAUC/TC/ST|C|DC SUM','enhc|ENHC']),
+ ...S('Freight','num',['freight|FREIGHT','rate|RATE','dead_freight_qty|Dead Freight Qty|C','dead_freight_charges|Dead Freight Charges']),
+ ...S('GCV Bonus / Penalty','num',['gcv_bonus_penalty|GCV BONUS PENALTY (Rs. PER MT)|C','gcv_bonus_penalty_amt|Bonus/Penalty|C'])
+];
+const COL_BY_DB = {}; COLS.forEach(c => COL_BY_DB[c.db] = c);
+const T = 'pjpb_rake_records';
+let AREAS = ['SECL', 'IB', 'CKP', 'CCL', 'NCL'];
+const AREA_LABEL = a => (a === 'IB' || a === 'CKP') ? `${a} (MCL)` : a;
+
+const $ = id => document.getElementById(id);
+const pad2 = n => String(n).padStart(2, '0');
+const num = v => (v === '' || v == null || isNaN(+v)) ? 0 : +v;
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const sum = (a, f) => a.reduce((s, r) => s + num(f(r)), 0);
+const round2 = n => Math.round(n * 100) / 100;
+
+let toastTimer;
+function toast(msg, err) {
+  const t = $('toast');
+  t.textContent = msg;
+  t.classList.toggle('error', !!err);
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), err ? 5000 : 3000);
+}
+
+/* ==================== PARSING HELPERS ==================== */
+const norm = s => String(s ?? '').toLowerCase().replace(/[^a-z0-9]/g, '');
+const HEADER_ALIASES = {};
+COLS.forEach(c => {
+  HEADER_ALIASES[norm(c.db)] = c.db;
+  HEADER_ALIASES[norm(c.label)] = c.db;
+  (c.aliases || []).forEach(a => HEADER_ALIASES[norm(a)] = c.db);
+});
+const NOT_IN_DB = new Set(['gcv_bonus_penalty','gcv_bonus_penalty_amt']);
+const isCalc = db => NOT_IN_DB.has(db);
+
+/* ==================== GCV BONUS / PENALTY ====================
+   Per MT  = -MIN( MAX(0, (LOADING GCV - GCV ARB - 200) / 100) * 20% * 4.73 , 75% * 4.73 )
+   Amount  = Per MT * RR Weight
+*/
+const GCV_RATE = 4.73;
+function gcvBonusPerMt(loadGcv, gcvArb) {
+  if (loadGcv == null || gcvArb == null || loadGcv === '' || gcvArb === '') return null;
+  const band = Math.max(0, (Number(loadGcv) - Number(gcvArb) - 200) / 100) * 0.2 * GCV_RATE;
+  return -Math.min(band, 0.75 * GCV_RATE);
+}
+function enrichRecord(r) {
+  const perMt = gcvBonusPerMt(r.loading_gcv, r.gcv_arb);
+  return {
+    ...r,
+    gcv_bonus_penalty: perMt == null ? null : round2(perMt),
+    gcv_bonus_penalty_amt: (perMt == null || r.rr_weight == null) ? null : round2(perMt * Number(r.rr_weight))
+  };
+}
+
+function validYmd(y, m, d) {
+  const dt = new Date(Date.UTC(y, m - 1, d));
+  return dt.getUTCFullYear() === y && dt.getUTCMonth() === m - 1 && dt.getUTCDate() === d;
+}
+function excelDate(v) {
+  if (v instanceof Date) return isNaN(v) ? null : `${v.getFullYear()}-${pad2(v.getMonth() + 1)}-${pad2(v.getDate())}`;
+  if (typeof v === 'number') {
+    if (v < 20000 || v > 80000) return null;
+    return new Date(Math.round((Math.floor(v) - 25569) * 86400 * 1000)).toISOString().slice(0, 10);
+  }
+  const s = String(v).trim();
+  let m = s.match(/^(\d{1,2})[-/.](\d{1,2})[-/.](\d{2,4})$/);
+  if (m) {
+    const y = m[3].length === 2 ? 2000 + +m[3] : +m[3];
+    return validYmd(y, +m[2], +m[1]) ? `${y}-${pad2(m[2])}-${pad2(m[1])}` : null;
+  }
+  m = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if (m) return validYmd(+m[1], +m[2], +m[3]) ? s.slice(0, 10) : null;
+  return null;
+}
+function excelTime(v) {
+  if (v instanceof Date) return isNaN(v) ? null : `${pad2(v.getHours())}:${pad2(v.getMinutes())}:00`;
+  if (typeof v === 'number') {
+    const total = Math.round((v - Math.floor(v)) * 1440) % 1440;
+    return `${pad2(Math.floor(total / 60))}:${pad2(total % 60)}:00`;
+  }
+  const m = String(v).trim().match(/^(\d{1,2}):+(\d{2})(?::(\d{2}))?/);
+  if (!m || +m[1] > 23 || +m[2] > 59) return null;
+  return `${pad2(m[1])}:${m[2]}:${pad2(m[3] || 0)}`;
+}
+function toDbValue(col, v) {
+  if (v === '' || v == null) return null;
+  const type = COL_BY_DB[col]?.type || 'text';
+  if (type === 'int' || type === 'num') {
+    const n = Number(String(v).replace(/[,\u20b9\s]/g, ''));
+    if (isNaN(n)) return null;
+    return type === 'int' ? Math.round(n) : n;
+  }
+  if (type === 'date') return excelDate(v);
+  if (type === 'time') return excelTime(v);
+  let s = typeof v === 'number' ? String(Math.round(v * 1e6) / 1e6) : String(v).trim();
+  if (s === '') return null;
+  if (col === 'area') s = s.toUpperCase();
+  return s;
+}
+function recordKey(d) {
+  return [d.loading_date || '', String(d.area || '').toUpperCase().trim(), String(d.source || '').toUpperCase().trim(),
+    d.time_pt || '', String(d.rr_number || '').trim()].join('|');
+}
+const monthOf = ymd => String(ymd || '').slice(0, 7);
+const minutesText = m => (m == null || isNaN(m)) ? '-' : `${pad2(Math.floor(m / 60))}:${pad2(Math.round(m % 60))} hrs`;
+
+/* ==================== PASSWORD + VIEWS ==================== */
+const PROTECTED = ['upload', 'log', 'entry', 'formulas'];
+const VIEW_NAMES = { upload: 'Upload Excel', log: 'Records Log', entry: 'Data Entry', formulas: 'Formulas' };
+let isUnlocked = false;
+let pendingView = 'dashboard';
+
+function showView(name) {
+  if (PROTECTED.includes(name) && !isUnlocked) {
+    pendingView = name;
+    $('lockTitle').textContent = 'Enter password to open ' + VIEW_NAMES[name];
+    $('pwdInput').value = '';
+    $('pwdErr').textContent = '';
+    name = 'lock';
+    setTimeout(() => $('pwdInput').focus(), 50);
+  }
+  document.querySelectorAll('.view').forEach(v => v.classList.toggle('active', v.id === 'view-' + name));
+  const navKey = name === 'lock' ? pendingView : name;
+  document.querySelectorAll('.nav-item').forEach(b => b.classList.toggle('active', b.dataset.view === navKey));
+
+  if (name === 'dashboard') loadDashboard();
+  if (name === 'reports') loadReports();
+  if (name === 'alerts') loadAlerts();
+  if (name === 'log') loadLog();
+  if (name === 'entry') initEntry();
+  if (name === 'formulas') renderFormulas();
+}
+
+function tryUnlock() {
+  if ($('pwdInput').value === APP_PASSWORD) {
+    isUnlocked = true;
+    $('pwdInput').value = '';
+    $('pwdErr').textContent = '';
+    $('userLabel').textContent = '';
+    showView(pendingView);
+  } else {
+    $('pwdErr').textContent = 'Wrong password';
+    $('pwdInput').select();
+  }
+}
+$('unlockBtn').addEventListener('click', tryUnlock);
+$('pwdInput').addEventListener('keydown', e => { if (e.key === 'Enter') tryUnlock(); });
+$('lockBack').addEventListener('click', () => showView('dashboard'));
+$('lockBtn').addEventListener('click', () => {
+  isUnlocked = false;
+  $('userLabel').textContent = 'Locked';
+  showView('dashboard');
+});
+document.querySelectorAll('.nav-item').forEach(b => b.addEventListener('click', () => showView(b.dataset.view)));
+
+/* ==================== DATA ACCESS ==================== */
+async function fetchAll(build) {
+  let all = [], from = 0;
+  for (;;) {
+    const { data, error } = await build().range(from, from + 999);
+    if (error) throw error;
+    all = all.concat(data || []);
+    if (!data || data.length < 1000) break;
+    from += 1000;
+  }
+  return all;
+}
+async function loadAreas() {
+  try {
+    const { data } = await db.from('pjpb_areas').select('code, sort_order').eq('active', true).order('sort_order');
+    if (data && data.length) AREAS = data.map(r => r.code);
+  } catch (e) { console.warn('Areas not loaded, using defaults', e); }
+}
+
+/* ==================== FORMULAS + SERVICE CHARGE RATES ==================== */
+let FORMULAS = { dayQty: 15000, pctLow: 100, scSecl: 0, scMcl: 0, scCcl: 0, scNcl: 0 };
+async function loadFormulas() {
+  try {
+    const { data } = await db.from('pjpb_settings').select('setting_key, setting_value');
+    (data || []).forEach(r => {
+      if (r.setting_key === 'day_qty_target' && !isNaN(+r.setting_value)) FORMULAS.dayQty = +r.setting_value;
+      if (r.setting_key === 'pct_highlight_below' && !isNaN(+r.setting_value)) FORMULAS.pctLow = +r.setting_value;
+      if (r.setting_key === 'sc_rate_secl' && !isNaN(+r.setting_value)) FORMULAS.scSecl = +r.setting_value;
+      if (r.setting_key === 'sc_rate_mcl' && !isNaN(+r.setting_value)) FORMULAS.scMcl = +r.setting_value;
+      if (r.setting_key === 'sc_rate_ccl' && !isNaN(+r.setting_value)) FORMULAS.scCcl = +r.setting_value;
+      if (r.setting_key === 'sc_rate_ncl' && !isNaN(+r.setting_value)) FORMULAS.scNcl = +r.setting_value;
+    });
+  } catch (e) { console.warn('Formulas not loaded, using defaults', e); }
+  // Reflect permanent SC rates in Data Entry inputs when present
+  ['scSecl', 'scMcl', 'scCcl', 'scNcl'].forEach(id => {
+    const el = $(id);
+    if (el && document.activeElement !== el) el.value = FORMULAS[id] ?? 0;
+  });
+}
+function renderFormulas() {
+  $('fDayQty').value = FORMULAS.dayQty;
+  $('fPctLow').value = FORMULAS.pctLow;
+}
+$('saveFormulas').addEventListener('click', async () => {
+  const dq = Number($('fDayQty').value), pl = Number($('fPctLow').value);
+  if (!(dq >= 0) || $('fDayQty').value === '' || $('fPctLow').value === '' || isNaN(pl)) { toast('Enter valid numbers', true); return; }
+  FORMULAS.dayQty = dq; FORMULAS.pctLow = pl;
+  const { error } = await db.from('pjpb_settings').upsert([
+    { setting_key: 'day_qty_target', setting_value: String(dq) },
+    { setting_key: 'pct_highlight_below', setting_value: String(pl) }
+  ], { onConflict: 'setting_key' });
+  if (error) { toast('Save failed: ' + error.message, true); return; }
+  toast('Formulas saved');
+  loadDashboard();
+});
+
+async function saveServiceCharges(silent) {
+  const keys = [
+    ['scSecl', 'sc_rate_secl'],
+    ['scMcl', 'sc_rate_mcl'],
+    ['scCcl', 'sc_rate_ccl'],
+    ['scNcl', 'sc_rate_ncl']
+  ];
+  const rows = [];
+  keys.forEach(([id, key]) => {
+    const v = $(id).value;
+    const n = v === '' ? 0 : Number(v);
+    if (isNaN(n) || n < 0) return;
+    FORMULAS[id] = n;
+    rows.push({ setting_key: key, setting_value: String(n) });
+  });
+  if (!rows.length) return;
+  const { error } = await db.from('pjpb_settings').upsert(rows, { onConflict: 'setting_key' });
+  if (error) { toast('Service charge save failed: ' + error.message, true); return; }
+  if (!silent) toast('Service charges saved');
+  if ($('view-dashboard').classList.contains('active')) loadDashboard();
+}
+let scTimer;
+function scheduleSaveSC() { clearTimeout(scTimer); scTimer = setTimeout(() => saveServiceCharges(false), 600); }
+
+/* ==================== PERIODS (QUARTER WISE WITH 3-DAY GRACE) ==================== */
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+const DAY = 86400000;
+const U = s => Date.UTC(+s.slice(0, 4), +s.slice(5, 7) - 1, +s.slice(8, 10));
+const ymd = ms => new Date(ms).toISOString().slice(0, 10);
+const todayStr = () => { const d = new Date(); return `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}`; };
+
+/* Quarters: Q1=Aug-Oct, Q2=Nov-Jan, Q3=Feb-Apr, Q4=May-Jul
+   (key year = year of first month)
+   Grace period of 3 days: each quarter starts on the 4th of the first month
+   and ends on the 3rd of the month after the last month.
+   Example: Q1 Aug-Oct 2026 → 04-08-2026 to 03-11-2026
+*/
+function buildQuarterKeys() {
+  const keys = [];
+  for (let y = 2025; y <= 2028; y++) {
+    for (let q = 1; q <= 4; q++) keys.push(`${y}-Q${q}`);
+  }
+  return keys;
+}
+const QUARTER_KEYS = buildQuarterKeys();
+const quarterLabel = k => {
+  const [ys, qs] = k.split('-Q');
+  const q = +qs, y = +ys;
+  if (q === 1) return `Aug-Sep-Oct ${y}`;
+  if (q === 2) return `Nov-Dec-Jan ${y}/${y + 1}`;
+  if (q === 3) return `Feb-Mar-Apr ${y + 1}`;
+  if (q === 4) return `May-Jun-Jul ${y + 1}`;
+  return k;
+};
+function currentQuarterKey() {
+  const d = new Date();
+  const y = d.getFullYear(), m = d.getMonth() + 1;
+  // Same decision logic (based on calendar month); only the date boundaries change
+  if (m >= 8 && m <= 10) return `${y}-Q1`;
+  if (m === 11 || m === 12) return `${y}-Q2`;
+  if (m === 1) return `${y - 1}-Q2`;
+  if (m >= 2 && m <= 4) return `${y - 1}-Q3`;
+  if (m >= 5 && m <= 7) return `${y - 1}-Q4`;
+  return `${y}-Q1`;
+}
+let PERIOD = new URLSearchParams(location.search).get('period');
+if (!QUARTER_KEYS.includes(PERIOD)) PERIOD = currentQuarterKey();
+if (!QUARTER_KEYS.includes(PERIOD)) PERIOD = QUARTER_KEYS[0];
+
+function quarterRange(key) {
+  const [ys, qs] = key.split('-Q');
+  const q = +qs, y = +ys;
+  let startM, startY, endM, endY;
+  if (q === 1) { startY = y; startM = 8; endY = y; endM = 10; }       // Aug-Oct
+  else if (q === 2) { startY = y; startM = 11; endY = y + 1; endM = 1; } // Nov-Jan
+  else if (q === 3) { startY = y + 1; startM = 2; endY = y + 1; endM = 4; } // Feb-Apr
+  else { startY = y + 1; startM = 5; endY = y + 1; endM = 7; }           // May-Jul
+
+  // Grace period: start on 4th of first month
+  const from = `${startY}-${pad2(startM)}-04`;
+
+  // Exclusive upper bound = 4th of the month after the last month
+  // (so inclusive end = 3rd of that month)
+  // JS months are 0-indexed: endM=10 (Oct) → monthIndex 10 = Nov
+  const next = new Date(Date.UTC(endY, endM, 4));
+  const to = ymd(next.getTime());
+  return { from, to };
+}
+
+function periodInfo(key) {
+  const { from, to } = quarterRange(key);
+  const totalDays = Math.round((U(to) - U(from)) / DAY);
+  const endIncl = ymd(U(to) - DAY);          // 3rd of the following month
+  const daysPassed = Math.min(totalDays, Math.max(0, Math.round((U(todayStr()) - U(from)) / DAY) + 1));
+  return { from, to, endIncl, totalDays, daysPassed };
+}
+function monthRange(key) { return quarterRange(key); } // alias
+const monthLabel = quarterLabel;
+const MONTH_KEYS = QUARTER_KEYS;
+
+/* ---- Quantity RECO (Carry Forward Rake based) ----
+   H = total rakes placed * 100 / carry forward rake
+   factor = IF(H<60,0.25,IF(H<70,0.5,IF(H<80,0.7,IF(H<90,0.8,IF(H<100,0.9,1))))) * 4.73
+   Performance on Quantity RECO = factor * total RR weight */
+const CARRY_FWD_DEFAULT = 233;
+const RECO_RATE = 4.73;
+function recoFactor(h) {
+  const slab = h < 60 ? 0.25 : h < 70 ? 0.5 : h < 80 ? 0.7 : h < 90 ? 0.8 : h < 100 ? 0.9 : 1;
+  return slab * RECO_RATE;
+}
+const cfKey = period => 'carry_fwd_rake_' + period;
+
+async function loadPeriodData(period) {
+  const { from, to } = monthRange(period);
+  const [recs, tgtRes, perRes, cfRes] = await Promise.all([
+    fetchAll(() => db.from(T).select('*').gte('loading_date', from).lt('loading_date', to).order('loading_date').order('id')),
+    db.from('pjpb_rake_targets').select('*').eq('period_key', period),
+    db.from('pjpb_periods').select('*').eq('period_key', period).maybeSingle(),
+    db.from('pjpb_settings').select('setting_value').eq('setting_key', cfKey(period)).maybeSingle()
+  ]);
+  if (tgtRes.error) throw tgtRes.error;
+  if (perRes.error) throw perRes.error;
+  const cfv = cfRes.data && cfRes.data.setting_value !== '' ? +cfRes.data.setting_value : NaN;
+  const cf = isNaN(cfv) ? CARRY_FWD_DEFAULT : cfv;
+  return { recs, tgts: tgtRes.data || [], per: perRes.data || {}, cf };
+}
+function reportCutoff(info, per) {
+  let c = per.report_date || todayStr();
+  if (c > info.endIncl) c = info.endIncl;
+  return c;
+}
+const askPerDay = (bal, days) => days > 0 ? round2(bal / days) : 0;
+const daysRemaining = (info, cutoff) => Math.max(0, Math.round((U(info.endIncl) - U(cutoff)) / DAY));
+
+/* ==================== STATS + DASHBOARD COMPUTE ==================== */
+function stats(rs) {
+  const s = { n: rs.length, rr: 0, rrN: 0, net: 0, netN: 0, chg: 0, chgN: 0, gcvW: 0, gcvR: 0, pun: 0, eh: 0, enhc: 0, ehx: 0, gst: 0, base: 0, frt: 0,
+    ul: 0, ol: 0, chbl: 0, lm: 0, lmN: 0, varS: 0, varNet: 0, varN: 0, rec: 0, recN: 0, lgW: 0, lgR: 0 };
+  rs.forEach(r => {
+    const rr = num(r.rr_weight);
+    s.rr += rr; if (r.rr_weight != null) s.rrN++;
+    s.net += num(r.net_wt); if (r.net_wt != null) s.netN++;
+    s.chg += num(r.chargeable_wt); if (r.chargeable_wt != null) s.chgN++;
+    if (r.gcv_arb != null) { s.gcvW += rr * num(r.gcv_arb); s.gcvR += rr; }
+    if (r.loading_gcv != null) { s.lgW += rr * num(r.loading_gcv); s.lgR += rr; }
+    s.rec += num(r.received_wt); if (r.received_wt != null) s.recN++;
+    s.pun += num(r.pol_group); s.eh += num(r.ehbc_group); s.enhc += num(r.enhc); s.ehx += num(r.ehbc);
+    s.gst += num(r.gst); s.base += num(r.rr_freight_base); s.frt += num(r.freight);
+    s.ul += num(r.ul_qty); s.ol += num(r.ol_qty); s.chbl += num(r.chbl_pun_qty);
+    if (r.loading_minutes != null) { s.lm += num(r.loading_minutes); s.lmN++; }
+    if (r.rr_weight != null && r.net_wt != null) { s.varS += num(r.rr_weight) - num(r.net_wt); s.varNet += num(r.net_wt); s.varN++; }
+  });
+  s.pen = s.pun + s.eh + s.enhc + s.ehx;
+  s.gcv = s.gcvR ? s.gcvW / s.gcvR : 0;
+  s.lgcv = s.lgR ? s.lgW / s.lgR : 0;
+  s.avgRr = s.rrN ? s.rr / s.rrN : 0;
+  s.avgNet = s.netN ? s.net / s.netN : 0;
+  s.avgChg = s.chgN ? s.chg / s.chgN : 0;
+  s.avgRec = s.recN ? s.rec / s.recN : 0;
+  s.avgLm = s.lmN ? s.lm / s.lmN : null;
+  s.fpm = s.rr ? s.frt / s.rr : 0;
+  return s;
+}
+const sourceGroup = src => String(src || '').replace(/\s*\(.*\)\s*$/, '').trim();
+
+function computeDashboard(period, data) {
+  const info = periodInfo(period);
+  const { recs, tgts, per } = data;
+  const out = {}; const put = (id, v, k = 'int') => { out[id] = { v, k }; };
+  const cutoff = reportCutoff(info, per);
+  const rem = daysRemaining(info, cutoff);
+  const all = stats(recs);
+
+  let tTarget = 0, tLoaded = 0, tAsk = 0;
+  AREAS.forEach(a => {
+    const target = sum(tgts.filter(t => t.area === a), t => t.qtr_target);
+    const loaded = recs.filter(r => r.area === a && r.loading_date <= cutoff).length;
+    const bal = target - loaded, ask = askPerDay(bal, rem);
+    put('tgt_' + a, target); put('load_' + a, loaded); put('bal_' + a, bal); put('ask_' + a, ask, 'd2');
+    tTarget += target; tLoaded += loaded; tAsk += ask;
+  });
+  put('tgt_TOTAL', tTarget); put('load_TOTAL', tLoaded); put('bal_TOTAL', tTarget - tLoaded); put('ask_TOTAL', round2(tAsk), 'd2');
+
+  // Avg Short / Excess = (sum RR Weight − sum Received Wt) / count of Received Wt values
+  put('wv_perRake', all.recN ? (all.rr - all.rec) / all.recN : 0, 'd2');
+  // Normalised Qty % = only rows with Received Wt:
+  //   ((sum RR Weight − sum Received Wt) × 100) / sum RR Weight
+  let normRr = 0, normRec = 0;
+  recs.forEach(r => {
+    if (r.received_wt == null || r.received_wt === '') return;
+    normRr += num(r.rr_weight);
+    normRec += num(r.received_wt);
+  });
+  put('wv_pct', normRr ? ((normRr - normRec) * 100) / normRr : 0, 'pct');
+  const perMt = v => all.rr ? v / all.rr : 0;
+  // Area-wise Loading / Unloading GCV =
+  //   SUMPRODUCT(GCV, RR Weight for area) / Quantity (total RR Weight) of that area
+  const areaGcv = rs => {
+    let ugNum = 0, lgNum = 0, qty = 0;
+    rs.forEach(r => {
+      const rr = num(r.rr_weight);
+      qty += rr;
+      if (r.gcv_arb != null && r.gcv_arb !== '') ugNum += rr * num(r.gcv_arb);
+      if (r.loading_gcv != null && r.loading_gcv !== '') lgNum += rr * num(r.loading_gcv);
+    });
+    return { unload: qty ? ugNum / qty : 0, load: qty ? lgNum / qty : 0 };
+  };
+  AREAS.forEach(a => {
+    const rs = recs.filter(r => r.area === a);
+    const g = areaGcv(rs);
+    put('aw_lgcv_' + a, g.load, 'int');
+    put('aw_ugcv_' + a, g.unload, 'int');
+    put('aw_gcvd_' + a, g.load - g.unload, 'int');
+  });
+
+  // Particulars
+  // Quantity RECO: H = rakes placed * 100 / carry forward rake; value = slab factor * 4.73 * total RR weight
+  const cf = data.cf;
+  const hVal = cf > 0 ? all.n * 100 / cf : 0;
+  const qtyReco = cf > 0 ? recoFactor(hVal) * all.rr : 0;
+  const mt = v => all.rr ? v / all.rr : 0; // Per MT vs total RR Weight
+  put('par_qtyReco', qtyReco, 'int');
+  put('par_qtyRecoMt', mt(qtyReco), 'd2');
+
+  // GCV RECO = sum of Bonus/Penalty amount (gcv_bonus_penalty_amt)
+  let gcvReco = 0;
+  recs.forEach(r => {
+    const perMtBp = gcvBonusPerMt(r.loading_gcv, r.gcv_arb);
+    if (perMtBp != null && r.rr_weight != null) gcvReco += perMtBp * Number(r.rr_weight);
+  });
+  gcvReco = round2(gcvReco);
+  put('par_gcvReco', gcvReco, 'int');
+  put('par_gcvRecoMt', mt(gcvReco), 'd2');
+
+  // Service Charge = RR Weight of area × permanent rate (₹/MT)
+  // MCL = IB + CKP
+  const rrSecl = stats(recs.filter(r => r.area === 'SECL')).rr;
+  const rrMcl = stats(recs.filter(r => r.area === 'IB' || r.area === 'CKP')).rr;
+  const rrCcl = stats(recs.filter(r => r.area === 'CCL')).rr;
+  const rrNcl = stats(recs.filter(r => r.area === 'NCL')).rr;
+  const scSecl = rrSecl * (FORMULAS.scSecl || 0);
+  const scMcl = rrMcl * (FORMULAS.scMcl || 0);
+  const scCcl = rrCcl * (FORMULAS.scCcl || 0);
+  const scNcl = rrNcl * (FORMULAS.scNcl || 0);
+  put('par_scSecl', scSecl, 'int'); put('par_scSeclMt', mt(scSecl), 'd2');
+  put('par_scMcl', scMcl, 'int'); put('par_scMclMt', mt(scMcl), 'd2');
+  put('par_scCcl', scCcl, 'int'); put('par_scCclMt', mt(scCcl), 'd2');
+  put('par_scNcl', scNcl, 'int'); put('par_scNclMt', mt(scNcl), 'd2');
+
+  // Total Railway Penalty shown as negative (cost)
+  const ulSumForPar = sum(recs, r => r.underload_charges);
+  const penTotalPar = ulSumForPar + all.pun + all.eh + all.enhc;
+  const penNeg = -Math.abs(penTotalPar);
+  put('par_pen', penNeg, 'int');
+  put('par_penMt', mt(penNeg), 'd2');
+
+  // TOTAL BILLING = Qty RECO + GCV RECO + SC (all) + Railway Penalty (already negative)
+  const totalBill = qtyReco + gcvReco + scSecl + scMcl + scCcl + scNcl + penNeg;
+  const expBill = info.daysPassed ? totalBill / info.daysPassed * info.totalDays : 0;
+  put('par_totalBill', totalBill, 'int'); put('par_totalBillMt', mt(totalBill), 'd2');
+  put('par_expBill', expBill, 'int');
+
+  // Rake Performance
+  // Target Achieved: Achieve = (rakes loaded till × 100) / quarter target ; Target = 100%
+  put('pd_tgtAch', tTarget ? (tLoaded * 100) / tTarget : 0, 'pct');
+  put('pd_tgtTgt', 100, 'pct');
+  // Asking: Achieve = rakes loaded till / days passed ; Target = sum of asking per day
+  put('pd_askAch', info.daysPassed ? tLoaded / info.daysPassed : 0, 'd2');
+  put('pd_askTgt', round2(tAsk), 'd2');
+
+  // Weight Summary (whole numbers)
+  // Avg Net Wt = avg Net wt; Avg Chg Wt = avg Chargeable Wt; Avg RR Wt = avg RR Weight
+  // Total RR Weight = sum of RR Weight; Total Plant Receive = sum of Net wt
+  put('t_avgNet', all.avgRec, 'int'); put('t_avgChg', all.avgChg, 'int'); put('t_avgRr', all.avgRr, 'int');
+  put('t_avgGcv', all.gcv, 'int');
+  put('t_totalRr', all.rr, 'int');
+  put('t_plantRecv', all.rec, 'int');
+
+  // Railway Freight Penalties
+  // Underload = sum of UNDERLOAD charges; Overload = sum of POL group charges;
+  // EHBC/FAUC/TC = sum of EHBC group; ENHC = sum of ENHC
+  const ulSum = sum(recs, r => r.underload_charges);
+  put('pn_ulChg', ulSum); put('pn_ulChgMt', perMt(ulSum), 'd2');
+  put('pn_olChg', 0); put('pn_olChgMt', 0, 'd2');
+  put('pn_pun', all.pun); put('pn_punMt', perMt(all.pun), 'd2');
+  put('pn_ehbc', all.eh); put('pn_ehbcMt', perMt(all.eh), 'd2');
+  put('pn_enhc', all.enhc); put('pn_enhcMt', perMt(all.enhc), 'd2');
+  put('pn_dead', 0); put('pn_deadMt', 0, 'd2');
+  // Overload (POL group) and Punitive Sum are the same figure, so it is counted once in the total
+  const penTotal = ulSum + all.pun + all.eh + all.enhc;
+  put('pn_total', penTotal); put('pn_totalMt', perMt(penTotal), 'd2');
+
+  AREAS.forEach(a => {
+    const rs = recs.filter(r => r.area === a);
+    const s = stats(rs);
+    const g = areaGcv(rs);
+    // Per Ton Cost = (Punitive Sum + EHBC/FAUC/SD/TC + ENHC) / RR Quantity of area
+    const penSum = s.pun + s.eh + s.enhc;
+    const perTon = s.rr ? penSum / s.rr : 0;
+    put('a_rr_' + a, s.rr, 'int');
+    put('a_ugcv_' + a, g.unload, 'int');
+    put('a_lgcv_' + a, g.load, 'int');
+    put('a_gcvd_' + a, g.load - g.unload, 'int');
+    put('a_pun_' + a, s.pun, 'int');
+    put('a_ehbc_' + a, s.eh, 'int');
+    put('a_enhc_' + a, s.enhc, 'int');
+    put('a_fpm_' + a, perTon, 'd2');
+    put('a_ulChg_' + a, sum(rs, r => r.underload_charges), 'int');
+  });
+
+  const lastRake = recs.length ? recs[recs.length - 1].loading_date : '';
+  return { out, info, lastRake, recs };
+}
+
+/* ---- rendering ---- */
+function formatCell(n, k) {
+  if (!Number.isFinite(n)) return '';
+  const dec = { int: 0, d1: 1, d2: 2, pct: 1 }[k] ?? 2;
+  const r = Math.round(Math.abs(n) * Math.pow(10, dec)) / Math.pow(10, dec);
+  if (r === 0) return '-';
+  const txt = r.toLocaleString('en-IN', { minimumFractionDigits: dec, maximumFractionDigits: dec });
+  return (n < 0 ? '-' : '') + txt + (k === 'pct' ? '%' : '');
+}
+function renderCalculated(values) {
+  Object.entries(values).forEach(([id, { v, k }]) => {
+    const el = $(id);
+    if (!el || el === document.activeElement) return;
+    if (k === 'str') { el.value = v; el.classList.remove('neg'); return; }
+    const n = Number(v);
+    el.value = formatCell(n, k);
+    el.classList.toggle('neg', n < 0);
+    el.classList.toggle('pos', n >= 0);
+  });
+}
+
+const AREA_PERF_ROWS = [
+  ['Quantity', 'a_rr_'],
+  ['Unloading End GCV', 'a_ugcv_'],
+  ['Loading End GCV', 'a_lgcv_'],
+  ['GCV Diff.', 'a_gcvd_'],
+  ['Punitive Sum (POL1, POL2, POLA..)', 'a_pun_'],
+  ['EHBC / FAUC / SD / TC Charges', 'a_ehbc_'],
+  ['ENHC Charges', 'a_enhc_'],
+  ['Per Ton Cost', 'a_fpm_'],
+  ['Under Load Charges', 'a_ulChg_']
+];
+function buildAreaDom() {
+  const colsPerf = [...AREAS];
+  const colsTgt = [...AREAS];
+  $('areaTargetsBox').innerHTML = `<table class="area-table five"><thead><tr><th></th>${colsTgt.map(a => `<th>${AREA_LABEL(a)}</th>`).join('')}</tr></thead><tbody>` +
+    [['Target of Quarter', 'tgt_'], ['Rake Loaded Till', 'load_'], ['Balance Rake', 'bal_'], ['Asking Per Day', 'ask_']].map(([l, p]) =>
+      `<tr><td class="row-label">${l}</td>${colsTgt.map(a => `<td><input id="${p}${a}" readonly></td>`).join('')}</tr>`).join('') + '</tbody></table>';
+  $('areaWtBox').innerHTML = AREAS.map(a =>
+    `<div class="metric-row"><span class="metric-label">${AREA_LABEL(a)}</span><div class="pair3"><input class="metric-value" id="aw_lgcv_${a}" readonly><input class="metric-value" id="aw_ugcv_${a}" readonly><input class="metric-value" id="aw_gcvd_${a}" readonly></div></div>`).join('');
+  $('areaPerfTbl').innerHTML = `<thead><tr><th>AREA</th>${colsPerf.map(a => `<th>${a === 'TOTAL' ? 'TOTAL' : AREA_LABEL(a)}</th>`).join('')}</tr></thead><tbody>` +
+    AREA_PERF_ROWS.map(([l, p]) => `<tr><td class="row-label">${l}</td>${colsPerf.map(a => `<td><input id="${p}${a}" readonly></td>`).join('')}</tr>`).join('') + '</tbody>';
+}
+
+/* Month-wise trend: one row per month of the financial year that holds the selected month */
+async function loadTrend() {
+  // Show the 4 quarters of the cycle (Aug→Jul) that contains the selected quarter
+  // With grace period the cycle runs from 4 Aug to 4 Aug next year
+  const y = +PERIOD.split('-Q')[0];
+  const recsFy = await fetchAll(() =>
+    db.from(T).select('*')
+      .gte('loading_date', `${y}-08-04`)
+      .lt('loading_date', `${y + 1}-08-04`)
+      .order('loading_date').order('id')
+  );
+  const int = n => (n == null || !n) ? '-' : Math.round(n).toLocaleString('en-IN');
+  const money = (n, d) => (n == null || !n) ? '-' : '\u20b9 ' + n.toLocaleString('en-IN', { minimumFractionDigits: d, maximumFractionDigits: d });
+  let html = '';
+  for (let q = 1; q <= 4; q++) {
+    const key = `${y}-Q${q}`;
+    const info = periodInfo(key);
+    const mr = recsFy.filter(r => {
+      const d = r.loading_date || '';
+      return d >= info.from && d < info.to;
+    });
+    const s = stats(mr);
+    const target = FORMULAS.dayQty * info.totalDays;
+    const pct = (mr.length && target) ? Math.min(100, s.rr / target * 100) : null;
+    const cls = pct != null && pct < FORMULAS.pctLow ? 'low' : '';
+    const days = info.daysPassed;
+    html += `<tr><td>${quarterLabel(key)}</td><td>${int(s.n)}</td><td>${int(s.rr)}</td>
+      <td>${days && s.rr ? int(s.rr / days) : '-'}</td><td>${s.rr ? money(s.fpm, 2) : '-'}</td>
+      <td>${int(target)}</td><td class="${cls}">${pct == null ? '-' : pct.toFixed(2) + '%'}</td></tr>`;
+  }
+  $('trendBody').innerHTML = html;
+}
+
+let loadSeq = 0;
+async function loadDashboard() {
+  const seq = ++loadSeq;
+  try {
+    const data = await loadPeriodData(PERIOD);
+    if (seq !== loadSeq) return;
+    const calc = computeDashboard(PERIOD, data);
+    renderCalculated(calc.out);
+    // "Performance Report updated upto" is always yesterday (same as Gujarat)
+    const yd = new Date(); yd.setDate(yd.getDate() - 1);
+    $('reportUpdatedUpto').textContent = yd.toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' });
+    await loadTrend();
+  } catch (err) {
+    console.error(err);
+    toast('Could not calculate dashboard: ' + (err.message || 'Supabase error'), true);
+  }
+}
+
+function setPeriod(key) {
+  PERIOD = key;
+  $('periodPick').value = key; $('periodPick2').value = key;
+  $('periodLabel').textContent = `AMM PJPB • ${quarterLabel(PERIOD)}`;
+  subscribeLive();
+}
+function fillPeriodPickers() {
+  const opts = QUARTER_KEYS.map(k => `<option value="${k}">${quarterLabel(k)}</option>`).join('');
+  ['periodPick', 'periodPick2', 'rakePeriod'].forEach(id => $(id).innerHTML = opts);
+  $('periodPick').value = PERIOD; $('periodPick2').value = PERIOD; $('rakePeriod').value = PERIOD;
+  $('periodPick').addEventListener('change', e => { setPeriod(e.target.value); loadDashboard(); });
+  $('periodPick2').addEventListener('change', e => { setPeriod(e.target.value); loadReports(); });
+}
+
+let liveChannel = null;
+function subscribeLive() {
+  try {
+    if (liveChannel) db.removeChannel(liveChannel);
+    liveChannel = db.channel('pjpb-live-' + PERIOD)
+      .on('postgres_changes', { event: '*', schema: 'public', table: T }, () => { if ($('view-dashboard').classList.contains('active')) loadDashboard(); })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'pjpb_rake_targets' }, () => { if ($('view-dashboard').classList.contains('active')) loadDashboard(); })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'pjpb_periods' }, () => { if ($('view-dashboard').classList.contains('active')) loadDashboard(); })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'pjpb_settings' }, () => loadFormulas().then(() => { if ($('view-dashboard').classList.contains('active')) loadDashboard(); }))
+      .subscribe();
+  } catch (err) { console.warn('Realtime unavailable', err); }
+}
+
+$('reloadBtn').addEventListener('click', loadDashboard);
+
+/* PNG export */
+$('pdfBtn').addEventListener('click', async () => {
+  const btn = $('pdfBtn'); btn.disabled = true;
+  const el = document.querySelector('#view-dashboard');
+  const oldBg = el.style.background;
+  try {
+    await loadDashboard();
+    el.style.background = 'radial-gradient(900px 480px at 95% -8%,#ddd9ff 0,transparent 70%),radial-gradient(800px 460px at -5% 105%,#ffe8cc 0,transparent 70%),var(--bg)';
+    const dataUrl = await htmlToImage.toPng(el, { pixelRatio: 2, cacheBust: true });
+    const a = document.createElement('a');
+    a.href = dataUrl;
+    a.download = `PJPB-Performance-Meter-${PERIOD}.png`;
+    document.body.appendChild(a); a.click(); a.remove();
+    toast('PNG downloaded');
+  } catch (e) {
+    console.error(e); toast('PNG failed', true);
+  } finally {
+    el.style.background = oldBg;
+  }
+  btn.disabled = false;
+});
+
+/* ==================== REPORTS ==================== */
+let repData = null;
+async function loadReports() {
+  $('repPeriod').textContent = `Quarter and area summary \u2022 ${monthLabel(PERIOD)}`;
+  try {
+    const { recs } = await loadPeriodData(PERIOD);
+    const info = periodInfo(PERIOD);
+    const f = formatCell;
+    const head = first => `<thead><tr><th>${first}</th><th>Rakes</th><th>RR Qty (MT)</th><th>Avg. RR Wt.</th><th>Per Day Qty</th><th>Punitive Sum</th><th>Total Penalty</th><th>Total Freight</th><th>Freight / MT</th></tr></thead>`;
+    const rowHtml = (label, s, days) => `<tr><td>${esc(label)}</td><td>${f(s.n, 'int')}</td><td>${f(s.rr, 'd1')}</td><td>${f(s.avgRr, 'd1')}</td><td>${days ? f(s.rr / days, 'int') : '-'}</td><td>${f(s.pun, 'int')}</td><td>${f(s.pen, 'int')}</td><td>${f(s.frt, 'int')}</td><td>${f(s.fpm, 'd2')}</td></tr>`;
+    const all = stats(recs);
+    $('repMonth').innerHTML = head('Quarter') + '<tbody></tbody><tfoot>' + rowHtml(monthLabel(PERIOD), all, info.daysPassed) + '</tfoot>';
+    const areas = AREAS.map(a => ({ label: AREA_LABEL(a), s: stats(recs.filter(r => r.area === a)) }));
+    $('repArea').innerHTML = head('Area') + '<tbody>' + areas.map(a => rowHtml(a.label, a.s, info.daysPassed)).join('') + '</tbody><tfoot>' + rowHtml('Total', all, info.daysPassed) + '</tfoot>';
+    repData = { recs, areas, all, info };
+    $('repStatus').textContent = '';
+  } catch (e) { console.error(e); $('repStatus').textContent = 'Could not load report: ' + e.message; $('repStatus').className = 'status err'; }
+}
+$('repXlsx').addEventListener('click', () => {
+  if (!repData) { toast('Report not loaded yet', true); return; }
+  const mk = (label, s) => ({ [label]: '', Rakes: s.n, 'RR Qty (MT)': round2(s.rr), 'Avg RR Wt': round2(s.avgRr), 'Punitive Sum': round2(s.pun), 'Total Penalty': round2(s.pen), 'Total Freight': Math.round(s.frt), 'Freight / MT': round2(s.fpm) });
+  const wb = XLSX.utils.book_new();
+  const monthRows = [{ ...mk('Quarter', repData.all), Quarter: monthLabel(PERIOD) }];
+  const areaRows = repData.areas.map(a => { const o = mk('Area', a.s); o.Area = a.label; return o; });
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(monthRows), 'Monthly');
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(areaRows), 'Area');
+  const enr = repData.recs.map(enrichRecord);
+  const cols = logColumns(enr);
+  const recRows = enr.map(r => { const o = {}; cols.forEach(c => o[c.label] = r[c.db] ?? ''); return o; });
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(recRows), 'Records');
+  XLSX.writeFile(wb, `PJPB-Report-${PERIOD}.xlsx`);
+});
+
+/* ==================== ALERTS ==================== */
+async function loadAlerts() {
+  $('alPeriod').textContent = `Data checks \u2022 ${monthLabel(PERIOD)}`;
+  try {
+    const data = await loadPeriodData(PERIOD);
+    const { recs } = data, items = [];
+    const tag = r => `Sr ${r.sr_no ?? '-'} \u00b7 ${r.loading_date} \u00b7 ${r.area} \u00b7 ${r.source}`;
+    const list = rs => rs.slice(0, 6).map(tag).join('  |  ') + (rs.length > 6 ? `  |  +${rs.length - 6} more` : '');
+    const rrCount = {}; recs.forEach(r => { if (r.rr_number) (rrCount[r.rr_number] = rrCount[r.rr_number] || []).push(r); });
+    const dups = Object.entries(rrCount).filter(([, v]) => v.length > 1);
+    if (dups.length) items.push({ lvl: 'critical', title: `${dups.length} RR number(s) used on more than one rake`, text: dups.slice(0, 4).map(([k, v]) => `RR ${k}: ${list(v)}`).join('  ||  '), time: 'Check RR Number in Records Log' });
+    const noRrw = recs.filter(r => r.rr_weight == null);
+    if (noRrw.length) items.push({ lvl: 'critical', title: `${noRrw.length} rake(s) without RR Weight`, text: list(noRrw), time: 'These rakes are not counted in quantity' });
+    const mism = recs.filter(r => r.railway_total_freight != null && r.rr_freight_base != null &&
+      Math.abs(num(r.railway_total_freight) - (num(r.rr_freight_base) + num(r.pol_group) + num(r.ehbc_group) + num(r.gst) + num(r.enhc) + num(r.ehbc))) > 5000);
+    if (mism.length) items.push({ lvl: 'warning', title: `${mism.length} rake(s) where Total Freight differs from its parts by more than \u20b95,000`, text: list(mism), time: 'Total = Base + Punitive + EHBC group + GST + ENHC + EHBC' });
+    const noRr = recs.filter(r => !r.rr_number);
+    if (noRr.length) items.push({ lvl: 'warning', title: `${noRr.length} rake(s) without RR Number`, text: list(noRr), time: 'Add the RR Number in Records Log' });
+    const sick = recs.filter(r => num(r.sick_wagons) > 0);
+    if (sick.length) items.push({ lvl: 'warning', title: `${sick.length} rake(s) with sick wagons (${sum(sick, r => r.sick_wagons)} wagons)`, text: list(sick), time: 'Supply Wagons \u2212 Load Wagons' });
+    const pun = recs.filter(r => num(r.pol_group) > 0);
+    if (pun.length) items.push({ lvl: 'warning', title: `${pun.length} rake(s) with punitive charges (\u20b9 ${Math.round(sum(pun, r => r.pol_group)).toLocaleString('en-IN')})`, text: list(pun), time: 'POL1/POL2/POLA/KRBA/LADC/PCLA/DCLA' });
+    const info = periodInfo(PERIOD), cutoff = reportCutoff(info, data.per), rem = daysRemaining(info, cutoff);
+    const tgtTotal = sum(data.tgts, t => t.qtr_target);
+    if (tgtTotal) {
+      const loaded = recs.filter(r => r.loading_date <= cutoff).length;
+      items.push({ lvl: 'info', title: `Quarter target: ${loaded} of ${tgtTotal} loaded`, text: rem > 0 ? `${round2((tgtTotal - loaded) / rem)} rakes per day needed for the remaining ${rem} days.` : 'No days remain in this month.', time: `As on ${cutoff}` });
+    } else items.push({ lvl: 'info', title: 'No quarter target rakes entered', text: 'Enter targets in Data Entry > Target Rake to see Asking Per Day.', time: monthLabel(PERIOD) });
+    if (recs.length) items.push({ lvl: 'info', title: `Last rake loaded on ${recs[recs.length - 1].loading_date}`, text: `${recs.length} rakes in ${monthLabel(PERIOD)}.`, time: 'From the database' });
+    else items.push({ lvl: 'info', title: 'No rakes in this month yet', text: 'Upload an Excel sheet or add rakes in Data Entry.', time: monthLabel(PERIOD) });
+    if (recs.length && !dups.length) items.push({ lvl: 'success', title: 'All RR numbers are unique', text: `${recs.length} rakes checked.`, time: 'No duplicate RR numbers' });
+    const cnt = l => items.filter(i => i.lvl === l).length;
+    $('alCrit').textContent = cnt('critical'); $('alWarn').textContent = cnt('warning'); $('alInfo').textContent = cnt('info'); $('alCount').textContent = recs.length;
+    const order = { critical: 0, warning: 1, info: 2, success: 3 };
+    $('alertList').innerHTML = items.sort((a, b) => order[a.lvl] - order[b.lvl]).map(i =>
+      `<div class="alert-item ${i.lvl === 'info' ? '' : i.lvl}"><div><h4>${esc(i.title)}</h4><p>${esc(i.text)}</p><div class="alert-time">${esc(i.time)}</div></div></div>`).join('');
+  } catch (e) { console.error(e); $('alertList').innerHTML = `<div class="alert-item critical"><div><h4>Could not run checks</h4><p>${esc(e.message)}</p></div></div>`; }
+}
+$('alReload').addEventListener('click', loadAlerts);
+
+/* ==================== UPLOAD EXCEL ==================== */
+let parsedRows = [];
+let workbook = null;
+function setStatus(id, msg, cls) { const el = $(id); el.textContent = msg; el.className = 'status ' + (cls || ''); }
+
+$('drop').addEventListener('click', () => $('fileInput').click());
+$('drop').addEventListener('dragover', e => { e.preventDefault(); $('drop').classList.add('over'); });
+$('drop').addEventListener('dragleave', () => $('drop').classList.remove('over'));
+$('drop').addEventListener('drop', e => {
+  e.preventDefault(); $('drop').classList.remove('over');
+  if (e.dataTransfer.files[0]) readFile(e.dataTransfer.files[0]);
+});
+$('fileInput').addEventListener('change', e => { if (e.target.files[0]) readFile(e.target.files[0]); });
+
+function readFile(file) {
+  setStatus('uploadStatus', 'Reading ' + file.name + '...');
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      workbook = XLSX.read(new Uint8Array(e.target.result), { type: 'array' });
+      const meta = workbook.Workbook?.Sheets || [];
+      let names = workbook.SheetNames.filter(n => !(meta.find(s => s.name === n)?.Hidden > 0));
+      if (!names.length) names = workbook.SheetNames;
+      $('sheetPick').innerHTML = names.map(n => `<option value="${esc(n)}">${esc(n)}</option>`).join('');
+      loadSheet(names[0]);
+      setStatus('uploadStatus', `Loaded ${file.name}. Pick the sheet that holds the rakes.`, 'ok');
+    } catch (err) {
+      console.error(err);
+      setStatus('uploadStatus', 'Could not read this file: ' + err.message, 'err');
+    }
+  };
+  reader.readAsArrayBuffer(file);
+}
+$('sheetPick').addEventListener('change', e => loadSheet(e.target.value));
+
+function parseSheet(ws) {
+  const aoa = XLSX.utils.sheet_to_json(ws, { header: 1, defval: '', raw: true });
+  if (!aoa.length) return { error: 'Sheet is empty' };
+  let hdr = aoa.findIndex(r => r.filter(c => String(c).trim() !== '').length >= 3);
+  if (hdr < 0) hdr = 0;
+  const headers = aoa[hdr].map(h => String(h).trim());
+  const colMap = headers.map(h => HEADER_ALIASES[norm(h)] || null);
+  const seen = new Set();
+  const dupHdr = colMap.map(c => { if (!c) return false; if (seen.has(c)) return true; seen.add(c); return false; });
+  const rows = [];
+  for (let r = hdr + 1; r < aoa.length; r++) {
+    const row = aoa[r];
+    if (row.every(c => String(c).trim() === '')) continue;
+    const data = {};
+    colMap.forEach((dbc, i) => { if (!dbc || dupHdr[i] || isCalc(dbc)) return; data[dbc] = toDbValue(dbc, row[i]); });
+    if (!data.loading_date && !data.source) continue;
+    const errors = [];
+    if (!data.loading_date) errors.push('no valid loading date');
+    if (!data.area) errors.push('no area'); else if (!AREAS.includes(data.area)) errors.push('unknown area ' + data.area);
+    if (!data.source) errors.push('no source');
+    rows.push({ rowNo: r + 1, data, errors });
+  }
+  const seenKeys = new Set();
+  rows.forEach(x => {
+    if (x.errors.length) return;
+    const k = recordKey(x.data);
+    if (seenKeys.has(k)) x.errors.push('duplicate rake in file'); else seenKeys.add(k);
+  });
+  return { rows, headers, colMap, hdr };
+}
+
+function loadSheet(name) {
+  const res = parseSheet(workbook.Sheets[name]);
+  if (res.error) { setStatus('uploadStatus', res.error, 'err'); parsedRows = []; $('previewPanel').classList.add('hidden'); return; }
+  parsedRows = res.rows;
+  const chips = res.headers.map((h, i) => ({ h, db: res.colMap[i] })).filter(x => x.h);
+  $('mapping').innerHTML = chips.map(x => x.db
+    ? (isCalc(x.db) ? `<span class="chip auto">${esc(x.h)} \u2192 ${x.db} (auto, ignored)</span>` : `<span class="chip">${esc(x.h)} \u2192 ${x.db}</span>`)
+    : `<span class="chip skip">${esc(x.h)} (not in database, skipped)</span>`).join('');
+  renderPreview(chips.filter(x => !x.db).map(x => x.h));
+}
+
+function renderPreview(ignored) {
+  const cols = COLS.filter(c => !isCalc(c.db) && parsedRows.some(r => r.data[c.db] != null)).map(c => c.db);
+  const head = `<thead><tr><th>Row</th>${cols.map(c => `<th>${esc(COL_BY_DB[c].label)}</th>`).join('')}<th>Check</th></tr></thead>`;
+  const body = parsedRows.slice(0, 300).map(r => `<tr>
+    <td>${r.rowNo}</td>
+    ${cols.map(c => `<td>${esc(r.data[c] ?? '')}</td>`).join('')}
+    <td>${r.errors.length ? `<span class="chip skip">${esc(r.errors.join(', '))}</span>` : '<span class="chip">OK</span>'}</td>
+  </tr>`).join('');
+  $('previewTbl').innerHTML = head + `<tbody>${body || '<tr><td class="empty">No rake rows found. Check that the sheet has Loading Date, AREA and Source columns.</td></tr>'}</tbody>`;
+  $('previewCount').textContent = parsedRows.length;
+  $('previewPanel').classList.toggle('hidden', !parsedRows.length);
+  const bad = parsedRows.filter(r => r.errors.length).length;
+  $('importNote').textContent = (ignored.length ? `Ignored columns: ${ignored.join(', ')}. ` : '') + (bad ? `${bad} row(s) with a problem will be skipped.` : '');
+}
+
+$('cancelImport').addEventListener('click', () => {
+  parsedRows = []; $('previewPanel').classList.add('hidden'); $('mapping').innerHTML = '';
+  setStatus('uploadStatus', 'Import cancelled');
+});
+
+async function nextSrNos(rows) {
+  const next = {};
+  for (const m of [...new Set(rows.map(r => monthOf(r.data.loading_date)))]) {
+    const from = `${m}-01`, d = new Date(Date.UTC(+m.slice(0, 4), +m.slice(5, 7), 1)).toISOString().slice(0, 10);
+    const { data } = await db.from(T).select('sr_no').gte('loading_date', from).lt('loading_date', d).order('sr_no', { ascending: false }).limit(1);
+    next[m] = data && data.length && data[0].sr_no != null ? data[0].sr_no + 1 : 1;
+  }
+  rows.forEach(r => { if (r.data.sr_no == null) r.data.sr_no = next[monthOf(r.data.loading_date)]++; });
+}
+
+$('importBtn').addEventListener('click', async () => {
+  const good = parsedRows.filter(r => !r.errors.length);
+  if (!good.length) { toast('Nothing to import', true); return; }
+  if (!(await PRTPL.confirm(`Save ${good.length} rakes to the database? Rakes that already exist are updated, not duplicated.`, { title: 'Import rakes', okLabel: 'Save rakes', danger: false }))) return;
+  const btn = $('importBtn');
+  btn.disabled = true;
+  let ok = 0; const fail = [];
+  try {
+    await nextSrNos(good);
+    const keys = [...new Set(good.flatMap(r => Object.keys(r.data)))];
+    const full = r => { const o = {}; keys.forEach(k => o[k] = r.data[k] ?? null); o.record_key = recordKey(r.data); return o; };
+    for (let i = 0; i < good.length; i += 100) {
+      const chunk = good.slice(i, i + 100);
+      const { error } = await db.from(T).upsert(chunk.map(full), { onConflict: 'record_key' });
+      if (!error) { ok += chunk.length; continue; }
+      for (const r of chunk) {
+        const { error: e2 } = await db.from(T).upsert(full(r), { onConflict: 'record_key' });
+        if (e2) fail.push(`row ${r.rowNo}: ${e2.message}`); else ok++;
+      }
+    }
+    toast(`Saved ${ok} rakes${fail.length ? `, ${fail.length} failed` : ''}`, !!fail.length);
+    setStatus('uploadStatus', `Saved ${ok} of ${good.length} rakes.` + (fail.length ? ' Failed: ' + fail.slice(0, 5).join('; ') : ''), fail.length ? 'err' : 'ok');
+    if (!fail.length) { parsedRows = []; $('previewPanel').classList.add('hidden'); }
+  } catch (err) {
+    console.error(err);
+    toast('Import failed: ' + err.message, true);
+  } finally {
+    btn.disabled = false;
+  }
+});
+
+/* ==================== RECORDS LOG ==================== */
+/* Columns = every known form column first, then any other column the database returns */
+const LOG_READONLY = ['id', 'record_key', 'created_at', 'updated_at'];
+const LOG_FORMULA = {
+  gcv_bonus_penalty: 'Per MT = -MIN( MAX(0, (Loading GCV - GCV ARB - 200) / 100) × 20% × 4.73 , 75% × 4.73 ). Auto on load & when Loading GCV / GCV ARB change.',
+  gcv_bonus_penalty_amt: 'Amount = Per MT × RR Weight. Auto on load & when Loading GCV / GCV ARB / RR Weight change.'
+};
+function logColumns(recs) {
+  const seen = new Set(), cols = [];
+  const add = (db, label) => { if (seen.has(db)) return; seen.add(db);
+    cols.push({ db, label, calc: LOG_READONLY.includes(db) || isCalc(db), formula: LOG_FORMULA[db] || '' }); };
+  Object.keys(recs[0] || {}).forEach(k => add(k, COL_BY_DB[k]?.label || k.replace(/_/g, ' ')));
+  COLS.forEach(c => add(c.db, c.label));
+  return cols;
+}
+let logRecords = [], logCols = [], logFilters = {};
+async function loadLog() {
+  try {
+    const raw = await fetchAll(() => db.from(T).select('*').order('loading_date', { ascending: false }).order('sr_no', { ascending: false }).order('id'));
+    // Always recalculate bonus/penalty from formula on every load / site reload
+    logRecords = raw.map(enrichRecord);
+  } catch (error) { toast('Could not load records: ' + error.message, true); return; }
+  logCols = logColumns(logRecords);
+  const months = [...new Set(logRecords.map(r => monthOf(r.loading_date)))].sort().reverse();
+  const keep = $('logMonth').value;
+  $('logMonth').innerHTML = '<option value="">All months</option>' + months.map(m => `<option value="${m}">${monthLabel(m)}</option>`).join('');
+  $('logMonth').value = months.includes(keep) ? keep : (months[0] || '');
+  $('logTbl').innerHTML = `<thead><tr><th>Actions</th>${logCols.map(c => `<th${c.formula ? ` title="${esc(c.formula)}"` : ''}>${esc(c.label)}${c.calc && isCalc(c.db) ? ' <span class="tag">auto</span>' : ''}</th>`).join('')}</tr>
+    <tr class="filter-row"><th></th>${logCols.map(c => `<th><input data-f="${c.db}" placeholder="filter" value="${esc(logFilters[c.db] || '')}"></th>`).join('')}</tr></thead><tbody id="logBody"></tbody>`;
+  renderLog();
+}
+const LOG_LIMIT = 500;
+function renderLog() {
+  const q = $('logSearch').value.toLowerCase(), m = $('logMonth').value;
+  const fs = Object.entries(logFilters).filter(([, v]) => v);
+  const rows = logRecords.filter(r => (!m || monthOf(r.loading_date) === m) && (!q || JSON.stringify(r).toLowerCase().includes(q)) &&
+    fs.every(([k, v]) => String(r[k] ?? '').toLowerCase().includes(v.toLowerCase())));
+  const shown = rows.slice(0, LOG_LIMIT);
+  $('logCount').textContent = `${rows.length} of ${logRecords.length} records` + (rows.length > LOG_LIMIT ? ` (showing first ${LOG_LIMIT})` : '');
+  $('logBody').innerHTML = shown.map(r => `<tr data-id="${esc(r.id)}">
+    <td class="act"><button class="btn-soft btn-sm" data-save="${esc(r.id)}" title="Save"><i class="fas fa-floppy-disk"></i></button>
+    <button class="btn-soft btn-sm btn-danger" data-del="${esc(r.id)}" title="Delete"><i class="fas fa-trash"></i></button></td>
+    ${logCols.map(c => `<td><input data-col="${c.db}" value="${esc(r[c.db] ?? '')}" ${c.calc ? 'readonly' : ''}></td>`).join('')}</tr>`).join('')
+    || `<tr><td class="empty" colspan="${logCols.length + 1}">No records.</td></tr>`;
+}
+function recalcLogRow(tr) {
+  if (!tr) return;
+  const get = col => {
+    const el = tr.querySelector(`input[data-col="${col}"]`);
+    if (!el) return null;
+    const v = el.value.trim();
+    return v === '' ? null : v;
+  };
+  const set = (col, val) => {
+    const el = tr.querySelector(`input[data-col="${col}"]`);
+    if (el) el.value = val == null || val === '' ? '' : val;
+  };
+  const loadGcv = get('loading_gcv');
+  const gcvArb = get('gcv_arb');
+  const rrWt = get('rr_weight');
+  const perMt = gcvBonusPerMt(loadGcv, gcvArb);
+  set('gcv_bonus_penalty', perMt == null ? '' : round2(perMt));
+  set('gcv_bonus_penalty_amt', (perMt == null || rrWt == null || isNaN(+rrWt)) ? '' : round2(perMt * Number(rrWt)));
+}
+
+$('logTbl').addEventListener('input', e => {
+  const f = e.target.dataset.f;
+  if (f) { logFilters[f] = e.target.value; renderLog(); return; }
+  const col = e.target.dataset.col;
+  if (col === 'loading_gcv' || col === 'gcv_arb' || col === 'rr_weight') {
+    recalcLogRow(e.target.closest('tr'));
+  }
+});
+$('logClear').addEventListener('click', () => { logFilters = {}; $('logSearch').value = ''; $('logMonth').value = ''; $('logTbl').querySelectorAll('[data-f]').forEach(i => i.value = ''); renderLog(); });
+$('logSearch').addEventListener('input', renderLog);
+$('logMonth').addEventListener('change', renderLog);
+$('logReload').addEventListener('click', loadLog);
+
+$('logTbl').addEventListener('click', async e => {
+  const saveBtn = e.target.closest('[data-save]');
+  const delBtn = e.target.closest('[data-del]');
+  if (saveBtn) {
+    const tr = saveBtn.closest('tr');
+    // Ensure bonus/penalty is up to date before save (display only; not written to DB)
+    recalcLogRow(tr);
+    const patch = {};
+    tr.querySelectorAll('input[data-col]').forEach(inp => {
+      const col = inp.dataset.col;
+      if (LOG_READONLY.includes(col) || isCalc(col)) return;
+      patch[col] = toDbValue(col, inp.value);
+    });
+    if (!patch.loading_date || !patch.area || !patch.source) { setStatus('logStatus', 'Loading Date, AREA and Source are required', 'err'); return; }
+    patch.record_key = recordKey(patch);
+    const { error } = await db.from(T).update(patch).eq('id', saveBtn.dataset.save);
+    if (error) { setStatus('logStatus', 'Update failed: ' + error.message, 'err'); return; }
+    setStatus('logStatus', 'Record updated', 'ok');
+    toast('Record updated');
+    loadLog();
+  }
+  if (delBtn) {
+    if (!(await PRTPL.confirm('Delete this record permanently?', { title: 'Delete record?', okLabel: 'Delete' }))) return;
+    const { error } = await db.from(T).delete().eq('id', delBtn.dataset.del);
+    if (error) { setStatus('logStatus', 'Delete failed: ' + error.message, 'err'); return; }
+    setStatus('logStatus', 'Record deleted', 'ok');
+    toast('Record deleted');
+    loadLog();
+  }
+});
+
+/* ==================== DATA ENTRY ==================== */
+const SECTION_ICONS = { 'Basic Details': 'fa-circle-info', 'Allotment': 'fa-file-signature', 'Loading Time': 'fa-clock', 'Wagon Details': 'fa-train',
+  'Weight & Quality': 'fa-weight-scale', 'Railway Receipt': 'fa-receipt', 'Underload / Overload': 'fa-arrow-down-wide-short',
+  'Punitive Charges': 'fa-gavel', 'Other Railway Charges': 'fa-file-invoice-dollar', 'Freight': 'fa-indian-rupee-sign' };
+const UNITS = { net_wt: 'MT', chargeable_wt: 'MT', rr_weight: 'MT', ul_qty: 'MT', ol_qty: 'MT', chbl_pun_qty: 'MT', plant_end_gcv: 'kcal', tm_pct: '%' };
+
+function buildEntryForm() {
+  const sections = [];
+  COLS.forEach(c => { let s = sections.find(x => x.title === c.section); if (!s) sections.push(s = { title: c.section, fields: [] }); s.fields.push(c); });
+  $('formSections').innerHTML = sections.map(s => `
+    <div class="section">
+      <div class="section-title"><i class="fas ${SECTION_ICONS[s.title] || 'fa-circle'}"></i> ${s.title}</div>
+      <div class="form-grid">${s.fields.map(f => {
+        const R = f.flags.includes('R'), calc = f.flags.includes('C'), auto = f.flags.includes('A'), opt = f.flags.includes('O');
+        const label = `<label for="f_${f.db}">${esc(f.label)}${R ? '<span class="req">*</span>' : ''}${calc ? '<span class="tag">auto</span>' : ''}${opt ? '<span class="tag">optional</span>' : ''}${auto ? '<span class="tag">auto no.</span>' : ''}</label>`;
+        let input;
+        if (f.db === 'area') input = `<select class="field" id="f_area" name="area" required><option value="">Select</option></select>`;
+        else if (calc) input = `<input id="f_${f.db}" name="${f.db}" readonly placeholder="Auto">`;
+        else {
+          const type = f.type === 'date' ? 'date' : f.type === 'time' ? 'time' : (f.type === 'num' || f.type === 'int') ? 'number' : 'text';
+          const step = f.type === 'int' ? ' step="1"' : f.type === 'num' ? ' step="any"' : '';
+          const list = f.db === 'source' ? ' list="sourceList"' : f.db === 'box_type' ? ' list="boxList"' : '';
+          input = `<input id="f_${f.db}" name="${f.db}" type="${type}"${step}${list}${R ? ' required' : ''}>`;
+          if (UNITS[f.db]) input = `<div class="unit-wrap">${input}<span class="unit">${UNITS[f.db]}</span></div>`;
+        }
+        return `<div class="form-group">${label}${input}</div>`;
+      }).join('')}</div>
+    </div>`).join('');
+  $('f_area').innerHTML += AREAS.map(a => `<option value="${a}">${AREA_LABEL(a)}</option>`).join('');
+  ['supply_wagons', 'load_wagons', 'time_pt', 'time_ct', 'pola1', 'pola2', 'pola', 'ladc', 'pcla', 'dcla', 'sd', 'sdcc', 'st', 'tc', 'fauc',
+    'enhc', 'loading_gcv', 'gcv_arb', 'rr_weight', 'received_wt', 'net_wt', 'chargeable_wt'].forEach(k => { const el = $('f_' + k); if (el) el.addEventListener('input', recalcForm); });
+  $('f_loading_date').addEventListener('change', fillNextSr);
+}
+
+function recalcForm() {
+  const g = k => { const v = $('f_' + k).value; return v === '' ? null : Number(v); };
+  const z = k => g(k) || 0;
+  const s = g('supply_wagons'), l = g('load_wagons');
+  $('f_sick_wagons').value = (s == null && l == null) ? '' : (s || 0) - (l || 0);
+  const pol = ['pola1', 'pola2', 'pola', 'ladc', 'pcla', 'dcla'].reduce((a, k) => a + z(k), 0);
+  const eh = ['sd', 'sdcc', 'st', 'tc', 'fauc'].reduce((a, k) => a + z(k), 0);
+  $('f_pol_group').value = round2(pol); $('f_ehbc_group').value = round2(eh);
+  const pt = excelTime($('f_time_pt').value), ct = excelTime($('f_time_ct').value);
+  const mm = t => +t.slice(0, 2) * 60 + +t.slice(3, 5);
+  if (pt && ct) { const d = ((mm(ct) - mm(pt)) % 1440 + 1440) % 1440; $('f_loading_minutes').value = `${pad2(Math.floor(d / 60))}:${pad2(d % 60)}`; } else $('f_loading_minutes').value = '';
+  const rec = g('received_wt'), nt = g('net_wt'), chg = g('chargeable_wt'), rrw = g('rr_weight'), lw = g('load_wagons');
+  $('f_diff_wt').value = (rec != null && nt != null) ? round2(rec - nt) : '';
+  $('f_avg_loading').value = (rec != null && lw) ? Math.round(rec / lw * 1000) / 1000 : '';
+  $('f_fixed_5pct_qty').value = chg != null ? round2(chg * 0.05) : '';
+  const ul = (chg != null && rrw != null) ? round2(chg - rrw) : null;
+  $('f_under_load_qty').value = ul == null ? '' : ul;
+  $('f_dead_freight_qty').value = ul == null ? '' : Math.max(0, -ul);
+  // GCV bonus / penalty
+  const perMt = gcvBonusPerMt(g('loading_gcv'), g('gcv_arb'));
+  const rr = g('rr_weight');
+  $('f_gcv_bonus_penalty').value = perMt == null ? '' : round2(perMt);
+  $('f_gcv_bonus_penalty_amt').value = (perMt == null || rr == null) ? '' : round2(perMt * rr);
+}
+
+async function fillNextSr() {
+  const d = $('f_loading_date').value;
+  if (!d) { $('f_sr_no').value = ''; return; }
+  const m = monthOf(d), end = new Date(Date.UTC(+m.slice(0, 4), +m.slice(5, 7), 1)).toISOString().slice(0, 10);
+  const { data } = await db.from(T).select('sr_no').gte('loading_date', `${m}-01`).lt('loading_date', end).order('sr_no', { ascending: false }).limit(1);
+  $('f_sr_no').value = data && data.length && data[0].sr_no != null ? data[0].sr_no + 1 : 1;
+}
+
+async function loadSources() {
+  try {
+    const { data } = await db.from('pjpb_sources').select('source').order('source');
+    $('sourceList').innerHTML = (data || []).map(r => `<option value="${esc(r.source)}">`).join('');
+  } catch (e) { console.warn(e); }
+}
+
+let entryReady = false;
+async function initEntry() {
+  if (entryReady) {
+    // refresh month list for search
+    fillSearchMonths();
+    return;
+  }
+  entryReady = true;
+  buildEntryForm();
+  await loadSources();
+  fillSearchMonths();
+  await resetEntryForm();
+  await loadRake();
+}
+function fillSearchMonths() {
+  const keys = [];
+  for (let i = 0; i < 24; i++) {
+    const d = new Date(Date.UTC(2026, 3 + i, 1));
+    keys.push(`${d.getUTCFullYear()}-${pad2(d.getUTCMonth() + 1)}`);
+  }
+  const cur = todayStr().slice(0, 7);
+  $('searchMonth').innerHTML = keys.map(k => `<option value="${k}">${k}</option>`).join('');
+  if (keys.includes(cur)) $('searchMonth').value = cur;
+}
+
+async function resetEntryForm() {
+  $('entryForm').reset();
+  $('editRecordId').value = '';
+  $('f_loading_date').value = todayStr();
+  $('f_unit').value = 'IPP';
+  $('entrySubmitBtn').innerHTML = '<i class="fas fa-save"></i> Save Record';
+  $('searchSrStatus').textContent = '';
+  await fillNextSr();
+  recalcForm();
+}
+$('clearForm').addEventListener('click', resetEntryForm);
+
+async function searchBySr() {
+  const sr = Number($('searchSr').value);
+  const m = $('searchMonth').value;
+  if (!sr || !m) {
+    $('searchSrStatus').textContent = 'Enter Sr No and select month';
+    $('searchSrStatus').className = 'status err';
+    return;
+  }
+  const from = `${m}-01`;
+  const end = new Date(Date.UTC(+m.slice(0, 4), +m.slice(5, 7), 1)).toISOString().slice(0, 10);
+  try {
+    const { data, error } = await db.from(T).select('*').eq('sr_no', sr).gte('loading_date', from).lt('loading_date', end).limit(1);
+    if (error) throw error;
+    if (!data || !data.length) {
+      $('searchSrStatus').textContent = 'No record found for Sr ' + sr + ' in ' + m;
+      $('searchSrStatus').className = 'status err';
+      return;
+    }
+    const r = data[0];
+    $('editRecordId').value = r.id;
+    COLS.forEach(c => {
+      if (isCalc(c.db)) return;
+      const el = $('f_' + c.db);
+      if (!el) return;
+      const v = r[c.db];
+      if (v == null || v === '') { el.value = ''; return; }
+      if (c.type === 'date' && String(v).length >= 10) el.value = String(v).slice(0, 10);
+      else if (c.type === 'time' && String(v).length >= 5) el.value = String(v).slice(0, 5);
+      else el.value = v;
+    });
+    // calc fields
+    recalcForm();
+    if (r.pol_group != null) $('f_pol_group').value = r.pol_group;
+    if (r.ehbc_group != null) $('f_ehbc_group').value = r.ehbc_group;
+    if (r.sick_wagons != null) $('f_sick_wagons').value = r.sick_wagons;
+    $('entrySubmitBtn').innerHTML = '<i class="fas fa-floppy-disk"></i> Update Record';
+    $('searchSrStatus').textContent = 'Loaded Sr ' + sr + ' for update (id ' + r.id + ')';
+    $('searchSrStatus').className = 'status ok';
+  } catch (e) {
+    console.error(e);
+    $('searchSrStatus').textContent = 'Search failed: ' + e.message;
+    $('searchSrStatus').className = 'status err';
+  }
+}
+$('searchSrBtn').addEventListener('click', searchBySr);
+$('searchSr').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); searchBySr(); } });
+
+
+$('entryForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  const f = $('entryForm');
+  if (!f.checkValidity()) { f.reportValidity(); toast('Please fill the required fields', true); return; }
+  const row = {};
+  COLS.forEach(c => {
+    if (isCalc(c.db)) return;
+    const el = $('f_' + c.db);
+    if (el) row[c.db] = toDbValue(c.db, el.value);
+  });
+  if (!row.loading_date || !row.area || !row.source) { toast('Loading Date, Area and Source are required', true); return; }
+  row.record_key = recordKey(row);
+  const editId = $('editRecordId').value;
+  if (editId) {
+    const { error } = await db.from(T).update(row).eq('id', editId);
+    if (error) { toast('Update failed: ' + error.message, true); return; }
+    toast('Record updated');
+  } else {
+    const { error } = await db.from(T).insert(row);
+    if (error) {
+      toast(error.code === '23505' ? 'This rake already exists (same date, area, source, P/T and RR number). Search by Sr No to update, or edit in Records Log.' : 'Save failed: ' + error.message, true);
+      return;
+    }
+    toast('Record saved');
+  }
+  await loadSources();
+  await refreshLoaded();
+  await resetEntryForm();
+});
+
+/* ---- Target rake ---- */
+let rake = [];
+const fmtDay = v => Number(v || 0).toLocaleString('en-IN', { maximumFractionDigits: 2 });
+const fmtPct = v => Number(v || 0).toLocaleString('en-IN', { maximumFractionDigits: 1 }) + '%';
+const askingPct = (l, t) => t ? Math.round(l / t * 1000) / 10 : 0;
+function rakeCutoff() {
+  const info = periodInfo($('rakePeriod').value);
+  let c = $('rakeReportDate').value || todayStr();
+  if (c > info.endIncl) c = info.endIncl;
+  return { info, cutoff: c };
+}
+function renderRake() {
+  const { info, cutoff } = rakeCutoff();
+  const rem = daysRemaining(info, cutoff);
+  let t = 0, l = 0, ask = 0;
+  $('rakeBody').innerHTML = rake.map((r, i) => {
+    const bal = (+r.target || 0) - (+r.loaded || 0), apd = askPerDay(bal, rem);
+    t += +r.target || 0; l += +r.loaded || 0; ask += apd;
+    return `<tr>
+      <td><input readonly value="${i + 1}"></td>
+      <td><input readonly value="${esc(AREA_LABEL(r.area))}"></td>
+      <td><input type="number" min="0" data-i="${i}" value="${r.target}"></td>
+      <td><input readonly value="${r.loaded}"></td>
+      <td><input readonly value="${bal}"></td>
+      <td><input readonly value="${fmtDay(apd)}"></td>
+      <td><input readonly value="${fmtPct(askingPct(+r.loaded || 0, +r.target || 0))}"></td>
+    </tr>`;
+  }).join('');
+  $('tTarget').textContent = t; $('tLoaded').textContent = l; $('tBalance').textContent = t - l;
+  $('tAskingDay').textContent = fmtDay(round2(ask)); $('tAskingPct').textContent = fmtPct(askingPct(l, t));
+}
+async function countRakes(area, from, to) {
+  const { count, error } = await db.from(T).select('id', { count: 'exact', head: true }).eq('area', area).gte('loading_date', from).lte('loading_date', to);
+  if (error) throw error;
+  return count || 0;
+}
+async function refreshLoaded() {
+  if (!rake.length) return;
+  const { info, cutoff } = rakeCutoff();
+  try {
+    const counts = await Promise.all(rake.map(r => countRakes(r.area, info.from, cutoff)));
+    rake.forEach((r, i) => r.loaded = counts[i]);
+  } catch (e) { console.error(e); toast('Could not count loaded rakes', true); }
+  renderRake();
+}
+function prevMonth(key) {
+  // previous quarter
+  const [fy, qs] = key.split('-Q');
+  let y = +fy, q = +qs - 1;
+  if (q < 1) { q = 4; y -= 1; }
+  return `${y}-Q${q}`;
+}
+async function carryForward() {
+  const key = $('rakePeriod').value, p = prevMonth(key), pinfo = periodInfo(p);
+  const { data } = await db.from('pjpb_rake_targets').select('area, qtr_target').eq('period_key', p);
+  if (!data || !data.length) return false;
+  for (const r of rake) {
+    const s = data.find(x => x.area === r.area);
+    if (!s) continue;
+    const loaded = await countRakes(r.area, pinfo.from, pinfo.endIncl);
+    r.target = Math.max(0, (Number(s.qtr_target) || 0) - loaded);
+  }
+  return true;
+}
+async function loadRake() {
+  const key = $('rakePeriod').value;
+  const [tg, pr, cfr] = await Promise.all([
+    db.from('pjpb_rake_targets').select('area, qtr_target').eq('period_key', key),
+    db.from('pjpb_periods').select('report_date, freight_cost_target').eq('period_key', key).maybeSingle(),
+    db.from('pjpb_settings').select('setting_value').eq('setting_key', cfKey(key)).maybeSingle()
+  ]);
+  rake = AREAS.map(a => ({ area: a, target: 0, loaded: 0 }));
+  (tg.data || []).forEach(row => { const r = rake.find(x => x.area === row.area); if (r) r.target = row.qtr_target ?? 0; });
+  $('rakeReportDate').value = pr.data?.report_date || todayStr();
+  $('fcTarget').value = pr.data?.freight_cost_target ?? '';
+  $('cfRake').value = cfr.data && cfr.data.setting_value !== '' ? cfr.data.setting_value : CARRY_FWD_DEFAULT;
+  // Permanent service charge rates (until changed)
+  $('scSecl').value = FORMULAS.scSecl ?? 0;
+  $('scMcl').value = FORMULAS.scMcl ?? 0;
+  $('scCcl').value = FORMULAS.scCcl ?? 0;
+  $('scNcl').value = FORMULAS.scNcl ?? 0;
+  await refreshLoaded();
+}
+$('rakeBody').addEventListener('input', e => {
+  const i = e.target.dataset.i;
+  if (i == null) return;
+  rake[i].target = +e.target.value || 0;
+  renderRake();
+  scheduleSaveRake();
+});
+$('rakePeriod').addEventListener('change', loadRake);
+$('rakeReportDate').addEventListener('change', async () => { await refreshLoaded(); scheduleSaveRake(); });
+$('fcTarget').addEventListener('input', scheduleSaveRake);
+$('cfRake').addEventListener('input', scheduleSaveRake);
+['scSecl', 'scMcl', 'scCcl', 'scNcl'].forEach(id => $(id).addEventListener('input', scheduleSaveSC));
+$('carryFwd').addEventListener('click', async () => {
+  if (!(await PRTPL.confirm("Replace Quarter Target with the previous quarter's balance?", { title: 'Use previous balance?', okLabel: 'Replace targets', danger: true }))) return;
+  if (!(await carryForward())) { toast('No saved targets for previous quarter', true); return; }
+  renderRake(); await saveRake(false);
+});
+
+let rakeSaveChain = Promise.resolve(), rakeTimer;
+function scheduleSaveRake() { clearTimeout(rakeTimer); rakeTimer = setTimeout(() => saveRake(false), 600); }
+function saveRake(silent) {
+  rakeSaveChain = rakeSaveChain.then(async () => {
+    const key = $('rakePeriod').value;
+    try {
+      const fc = $('fcTarget').value;
+      const p = await db.from('pjpb_periods').upsert({ period_key: key, report_date: $('rakeReportDate').value || null, freight_cost_target: fc === '' ? null : +fc, updated_at: new Date().toISOString() }, { onConflict: 'period_key' });
+      if (p.error) throw p.error;
+      const t = await db.from('pjpb_rake_targets').upsert(rake.map(r => ({ period_key: key, area: r.area, qtr_target: +r.target || 0, updated_at: new Date().toISOString() })), { onConflict: 'period_key,area' });
+      if (t.error) throw t.error;
+      const cfv = $('cfRake').value;
+      const s = await db.from('pjpb_settings').upsert({ setting_key: cfKey(key), setting_value: cfv === '' ? String(CARRY_FWD_DEFAULT) : cfv }, { onConflict: 'setting_key' });
+      if (s.error) throw s.error;
+      if (!silent) toast('Target saved');
+    } catch (err) { console.error(err); toast('Target save failed: ' + (err.message || ''), true); }
+  });
+  return rakeSaveChain;
+}
+
+/* ==================== INIT ==================== */
+setInterval(() => { if (!document.hidden && $('view-dashboard').classList.contains('active')) loadDashboard(); }, 30000);
+(async () => {
+  await Promise.all([loadAreas(), loadFormulas()]);
+  buildAreaDom();
+  fillPeriodPickers();
+  setPeriod(PERIOD);
+  loadDashboard();
+})();
+</script>
+</body>
+</html>
